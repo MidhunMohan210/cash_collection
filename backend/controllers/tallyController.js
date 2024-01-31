@@ -4,6 +4,7 @@ import BankDetailsModel from "../models/bankModel.js";
 
 export const saveDataFromTally = async (req, res) => {
   try {
+    console.log("body",req.body);
     const dataToSave = await req.body.data;
     console.log("dataToSave", dataToSave);
     let docCount = await TallyData.find({}).countDocuments();
@@ -19,12 +20,12 @@ export const saveDataFromTally = async (req, res) => {
         });
 
         // If the document exists, use its serialNo; otherwise, assign a new serialNo
-        if (existingDocument) {
-          dataItem.serialNo = existingDocument.serialNo;
-        } else {
-          docCount = docCount + 1;
-          dataItem.serialNo = docCount;
-        }
+        // if (existingDocument) {
+        //   dataItem.serialNo = existingDocument.serialNo;
+        // } else {
+        //   docCount = docCount + 1;
+        //   dataItem.serialNo = docCount;
+        // }
 
         // Use findOneAndUpdate to find an existing document based on some unique identifier
         const updatedDocument = await TallyData.findOneAndUpdate(

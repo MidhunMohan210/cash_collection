@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const tallySchema = new mongoose.Schema({
-    serialNo:{type:Number,required:true,unique:true},
+    // serialNo:{type:Number,required:true,unique:true},
     cmp_id: { type: String, required: true },
     Primary_user_id: { type: String, required: true },
     party_name: { type: String, required: true },
