@@ -8,6 +8,8 @@ import connectDB from "./config/db.js";
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import path from 'path'
+import bodyParser from 'body-parser';
+
 
 
 dotenv.config();
@@ -20,8 +22,10 @@ const corsOptions = {
   
 
 const app = express();
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser())
 
