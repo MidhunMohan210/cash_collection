@@ -6,6 +6,7 @@ import api from "../../api/api.js";
 import { FaRegEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -174,6 +175,30 @@ function Login() {
                       "Login"
                     )}
                   </button>
+
+
+                </div>
+                <p className="text-center mt-3">
+                  Already have an account?{" "}
+                  <Link to={"/pUsers/register"}>
+                    {" "}
+                    <span className="text-blue-500 ml-1 cursor-pointer">
+                      Register
+                    </span>
+                  </Link>
+                </p>
+                <div className="flex justify-center text-sm mt-1 ">
+              
+                <p className="text-center font-semibold ">
+                  Login as
+                  <Link to={"/sUsers/login"}>
+                    {" "}
+                    <span className="text-blue-500 ml-1 cursor-pointer">
+                      Retailer
+                    </span>
+                  </Link>
+                  </p>
+                  
                 </div>
               </form>
             </div>

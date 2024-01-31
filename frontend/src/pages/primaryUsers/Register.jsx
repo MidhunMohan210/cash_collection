@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 import api from "../../api/api.js";
+import {useNavigate} from 'react-router-dom'
 
 
 const Register = () => {
@@ -18,6 +19,8 @@ const Register = () => {
   const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate=useNavigate()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -86,6 +89,9 @@ const Register = () => {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+
+        navigate('/pUsers/login')
+        
       }, 1000);
       
     } catch (error) {

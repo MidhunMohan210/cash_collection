@@ -305,7 +305,7 @@ const AddOrganisation = () => {
                             setGst(e.target.value);
                           }}
                           value={gst}
-                          placeholder="Postal Code"
+                          placeholder="Gst No"
                         />
                       </div>
                     </div>

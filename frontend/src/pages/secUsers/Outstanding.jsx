@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeSettlementData } from "../../../slices/settlementDataSlice";
 import { FaWhatsapp } from "react-icons/fa";
+import { PiDotsThreeOutline } from "react-icons/pi";
+
 
 
 function Outstanding() {
@@ -63,19 +65,17 @@ function Outstanding() {
 
   return (
     <div className="flex">
-      <SidebarSec TAB={"outstanding"} />
+      <SidebarSec TAB={"outstanding"}  />
 
       <div className=" flex-1  lg:px-[110px] h-screen overflow-y-scroll  md:mt-4 pb-   ">
         <div className="sticky top-0 flex flex-col z-30 bg-white">
           <div className="bg-white"></div>
-          <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex items-center gap-2  ">
-            {/* <IoIosArrowRoundBack
-              // onClick={() => {
-              //   onTabChange("outstanding");
-              // }}
-              className="text-3xl text-white"
-            /> */}
+          <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex justify-between items-center gap-2  ">
+           
             <p className="text-white text-md   font-bold ">Outstandings</p>
+            <PiDotsThreeOutline
+            onClick={()=>{handleToggleSidebar()}}
+             className="text-white text-lg block md:hidden"/>
           </div>
           <div className=" mt-0 shadow-lg p-2 md:p-0">
             <form>

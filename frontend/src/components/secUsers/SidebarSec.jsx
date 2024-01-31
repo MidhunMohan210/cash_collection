@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSecSelectedOrganization ,removeSecSelectedOrg} from "../../../slices/secSelectedOrgSlice";
 import { Link } from "react-router-dom";
 
-function SidebarSec({ onTabChange, TAB }) {
+function SidebarSec({ onTabChange, TAB, }) {
   console.log(TAB);
   const [showSidebar, setShowSidebar] = useState(false);
   const [userData, setUserData] = useState({});

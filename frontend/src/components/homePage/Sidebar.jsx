@@ -61,12 +61,12 @@ function Sidebar({  TAB }) {
 
   return (
     <div className="sb">
-      <div className={`md:hidden absolute`}>
+      {/* <div className={`md:hidden absolute`}>
         <IoReorderThree
           onClick={handleToggleSidebar}
           className="text-4xl ml-4 mt-3"
         />
-      </div>
+      </div> */}
 
       <aside
         className={` ${

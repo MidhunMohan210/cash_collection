@@ -78,15 +78,19 @@ function SecUsersList() {
       </div>
 
       <body className="flex-1 antialiased font-sans  h-screen overflow-y-scroll">
+
+      <div className="block md:hidden bg-[#201450] text-white mb-1 p-3  text-lg">
+          <p> Retailers </p>
+        </div>
         <div className="container mx-auto px-4 sm:px-8 ">
           <div className="py-8">
             <div>
-              <h2 className="text-2xl font-semibold leading-tight">
-                Secondary Users
+              <h2 className="hidden md:block text-lg font-semibold leading-tight">
+              Retailers
               </h2>
             </div>
-            <div className="my-2 flex sm:flex-row flex-col">
-              <div className="flex flex-row mb-1 sm:mb-0">
+            <div className="my-0 flex sm:flex-row flex-col  ">
+              <div className="flex mb-1 sm:mb-0 gap-4">
                 <div className="relative">
                   <select
                     value={selectedOrg}
@@ -109,7 +113,6 @@ function SecUsersList() {
                     </svg>
                   </div>
                 </div>
-              </div>
               <div className="block relative">
                 <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
                   <svg
@@ -126,9 +129,13 @@ function SecUsersList() {
                   className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
                 />
               </div>
+              </div>
             </div>
-            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4  overflow-x-auto">
               <div className="inline-block min-w-full shadow-lg  overflow-hidden">
+                  <div className=" hidden md:block bg-[#201450] p-4 text-white">
+                    <p>Retailers</p>
+                  </div>
                 <table className="min-w-full leading-normal">
                   <thead className="text-[#727ada]">
                     <tr>
@@ -200,18 +207,22 @@ function SecUsersList() {
                         </tr>
                       ))
                     ) : (
-                      <tr>
+                      <tr className="flex justify-center p-2 ">
                         <td> No users found</td>
                       </tr>
                     )}
                   </tbody>
                 </table>
+
+                {
+                      filteredSecUsers.length >0 &&
                 <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row sm:items-start md:items-center  xs:justify-between          ">
                   <span className="text-xs xs:text-sm text-gray-900">
                     Showing {firstPostIndex + 1} to {lastPostIndex} of{" "}
                     {filteredSecUsers.length} Entries
                   </span>
                   <div className="inline-flex mt-2 xs:mt-0">
+                    
                     <Pagination
                       postPerPage={postPerPage}
                       totalPosts={filteredSecUsers.length}
@@ -220,6 +231,7 @@ function SecUsersList() {
                     />
                   </div>
                 </div>
+                    }
               </div>
             </div>
           </div>
