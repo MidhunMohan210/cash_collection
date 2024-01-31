@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import api from "../../api/api.js";
 import { toast } from "react-toastify";
 import uploadImageToCloudinary from "../../../utils/uploadCloudinary.js";
 import { HashLoader } from "react-spinners";
 import Sidebar from "../../components/homePage/Sidebar.jsx";
+import { useNavigate } from "react-router-dom";
 
 const AddOrganisation = () => {
   const [name, setName] = useState("");
@@ -16,6 +17,12 @@ const AddOrganisation = () => {
   const [email, setEmail] = useState("");
   const [logo, setLogo] = useState("");
   const [loader, setLoader] = useState(false);
+
+
+  const navigate=useNavigate()
+
+
+
 
   const handleFileInputChange = async (e) => {
     const file = e.target.files[0];

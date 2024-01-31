@@ -2,9 +2,9 @@ import PrimaryUser from "../models/primaryUserModel.js";
 import Organization from "../models/OragnizationModel.js";
 import SecondaryUser from "../models/secondaryUserModel.js";
 import generatePrimaryUserToken from "../utils/generatePrimaryToken.js";
-import TallyData from '../models/TallyData.js'
+import TallyData from "../models/TallyData.js";
 import TransactionModel from "../models/TransactionModel.js";
-import  BankDetails from '../models/bankModel.js'
+import BankDetails from "../models/bankModel.js";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
@@ -79,13 +79,22 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const { userName,_id } = primaryUser._doc;
+    let haveOut;
+
+    const haveOutstanding = await TallyData.find({
+      Primary_user_id: primaryUser._id,
+    });
+   
+
+    haveOutstanding.length>0 ? haveOut=true :haveOut=false
+
+    const { userName, _id } = primaryUser._doc;
     const token = generatePrimaryUserToken(res, primaryUser._id);
 
     return res.status(200).json({
       message: "Login successful",
       token,
-      data: { email, userName,_id },
+      data: { email, userName, _id, haveOut },
     });
   } catch (error) {
     console.log(error);
@@ -139,7 +148,8 @@ export const getPrimaryUserData = async (req, res) => {
 // @desc Adding organizations by primary users
 // route POST/api/pUsers/addOrganizations
 export const addOrganizations = async (req, res) => {
-  const { name, place, pin, state, country, email, mobile, gst,logo} = req.body;
+  const { name, place, pin, state, country, email, mobile, gst, logo } =
+    req.body;
   console.log(req.file);
   console.log(req.body);
   const owner = req.pUserId;
@@ -181,7 +191,7 @@ export const getOrganizations = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.pUserId);
   console.log(userId);
   try {
-    const organizations = await Organization.find({ owner: userId })
+    const organizations = await Organization.find({ owner: userId });
     if (organizations) {
       return res.status(200).json({
         organizationData: organizations,
@@ -204,8 +214,8 @@ export const getOrganizations = async (req, res) => {
 // route GET/api/pUsers/addSecUsers
 export const addSecUsers = async (req, res) => {
   try {
-    const { name, mobile, email, password,selectedOrg } = req.body;
-    const pUserId=req.pUserId
+    const { name, mobile, email, password, selectedOrg } = req.body;
+    const pUserId = req.pUserId;
 
     const userExists = await SecondaryUser.findOne({ email });
 
@@ -220,8 +230,8 @@ export const addSecUsers = async (req, res) => {
       mobile,
       email,
       password,
-      organization:selectedOrg,
-      primaryUser:pUserId,
+      organization: selectedOrg,
+      primaryUser: pUserId,
     });
 
     const result = await user.save();
@@ -229,11 +239,17 @@ export const addSecUsers = async (req, res) => {
     if (result) {
       return res
         .status(200)
-        .json({ success: true, message: "Secondary user registration is successful" });
+        .json({
+          success: true,
+          message: "Secondary user registration is successful",
+        });
     } else {
       return res
         .status(400)
-        .json({ success: false, message: "Secondary user registration failed" });
+        .json({
+          success: false,
+          message: "Secondary user registration failed",
+        });
     }
   } catch (error) {
     console.error(error);
@@ -243,7 +259,6 @@ export const addSecUsers = async (req, res) => {
   }
 };
 
-
 // @desc get secondary users list
 // route GET/api/pUsers/fetchSecondaryUsers
 
@@ -251,7 +266,9 @@ export const fetchSecondaryUsers = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.pUserId);
   console.log(userId);
   try {
-    const secondaryUsers = await SecondaryUser.find({ primaryUser: userId }).populate('organization').exec();
+    const secondaryUsers = await SecondaryUser.find({ primaryUser: userId })
+      .populate("organization")
+      .exec();
     if (secondaryUsers) {
       return res.status(200).json({
         secondaryUsers: secondaryUsers,
@@ -270,26 +287,24 @@ export const fetchSecondaryUsers = async (req, res) => {
   }
 };
 
-
 // @desc get outstanding data from tally
 // route GET/api/pUsers/fetchOutstanding
 
 export const fetchOutstandingTotal = async (req, res) => {
-  const userId = req.pUserId
+  const userId = req.pUserId;
   try {
     // const tallyData = await TallyData.find({ Primary_user_id: userId });
-    const outstandingData=await TallyData.aggregate([
-      {$match:{ Primary_user_id:userId}},
+    const outstandingData = await TallyData.aggregate([
+      { $match: { Primary_user_id: userId } },
       {
-        $group:{
-          _id:"$party_id",
-          totalBillAmount:{$sum:"$bill_pending_amt"},
-          party_name:{$first:"$party_name"},
-          cmp_id: { $first: "$cmp_id" }, 
-
-        }
-      }
-    ])
+        $group: {
+          _id: "$party_id",
+          totalBillAmount: { $sum: "$bill_pending_amt" },
+          party_name: { $first: "$party_name" },
+          cmp_id: { $first: "$cmp_id" },
+        },
+      },
+    ]);
 
     if (outstandingData) {
       return res.status(200).json({
@@ -310,17 +325,21 @@ export const fetchOutstandingTotal = async (req, res) => {
 };
 
 // @desc get outstanding data from tally
-// route GET/api/pUsers/fetchOutstandingDetails 
+// route GET/api/pUsers/fetchOutstandingDetails
 
 export const fetchOutstandingDetails = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.pUserId);
-  const partyId=req.params.id;
-  const cmp_id=req.params.cmp_id;
-  console.log("cmp_id",cmp_id);
-  console.log("partyId",partyId);
+  const partyId = req.params.id;
+  const cmp_id = req.params.cmp_id;
+  console.log("cmp_id", cmp_id);
+  console.log("partyId", partyId);
   console.log(userId);
   try {
-    const outstandings = await TallyData.find({ Primary_user_id: userId,party_id:partyId,cmp_id:cmp_id });
+    const outstandings = await TallyData.find({
+      Primary_user_id: userId,
+      party_id: partyId,
+      cmp_id: cmp_id,
+    });
     if (outstandings) {
       return res.status(200).json({
         outstandings: outstandings,
@@ -338,8 +357,6 @@ export const fetchOutstandingDetails = async (req, res) => {
       .json({ success: false, message: "Internal server error, try again!" });
   }
 };
-
-
 
 // @desc confirm collection and alter db
 // route GET/api/pUsers/confirmCollection
@@ -422,8 +439,6 @@ export const confirmCollection = async (req, res) => {
   }
 };
 
-
-
 // @desc for getting transactions
 // route GET/api/pUsers/transactions
 
@@ -439,8 +454,8 @@ export const transactions = async (req, res) => {
           party_id: 1,
           party_name: 1,
           enteredAmount: 1,
-          isCancelled:1,
-          createdAt:1
+          isCancelled: 1,
+          createdAt: 1,
           // totalBillAmount: 1,
           // cmp_id: 1,
           // billNo: "$billData.billNo",
@@ -472,14 +487,12 @@ export const transactions = async (req, res) => {
   }
 };
 
-
 // @desc for cancelling transactions
 // route GET/api/pUsers/cancelTransaction
 
 export const cancelTransaction = async (req, res) => {
   try {
     const transactionId = new mongoose.Types.ObjectId(req.params.id);
-    
 
     const transactions = await TransactionModel.aggregate([
       { $match: { _id: transactionId } },
@@ -488,33 +501,38 @@ export const cancelTransaction = async (req, res) => {
         $project: {
           _id: 0,
           billNo: "$billData.billNo",
-          currentAmount: { $sum: ["$billData.settledAmount", "$billData.remainingAmount"] }
-        }
+          currentAmount: {
+            $sum: ["$billData.settledAmount", "$billData.remainingAmount"],
+          },
+        },
       },
     ]);
 
     console.log("Transactions to update:", transactions);
 
     for (const { billNo, currentAmount } of transactions) {
-      await TallyData.updateOne({ bill_no: billNo }, { $set: { bill_pending_amt: currentAmount } });
+      await TallyData.updateOne(
+        { bill_no: billNo },
+        { $set: { bill_pending_amt: currentAmount } }
+      );
       console.log(`Updated bill_pending_amt for ${billNo}`);
     }
 
-    await TransactionModel.updateOne({ _id: transactionId }, { $set: { isCancelled: true } });
+    await TransactionModel.updateOne(
+      { _id: transactionId },
+      { $set: { isCancelled: true } }
+    );
 
-
-    
-
-    res.status(200).json({ success: true, message: "Transaction canceled successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Transaction canceled successfully" });
   } catch (error) {
     console.error("Error canceling transaction:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-
-
-// @desc fetch banks for payment page 
+// @desc fetch banks for payment page
 // route GET/api/sUsers/fetchBanks/:cmp_id
 
 export const fetchBanks = async (req, res) => {
@@ -530,12 +548,16 @@ export const fetchBanks = async (req, res) => {
     ]);
 
     if (bankData.length > 0) {
-      return res.status(200).json({ message: "bankData fetched", data: bankData });
+      return res
+        .status(200)
+        .json({ message: "bankData fetched", data: bankData });
     } else {
       return res.status(404).json({ message: "Bank data not found" });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ status: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
   }
 };

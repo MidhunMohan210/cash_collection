@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../../api/api.js";
 import { toast } from "react-toastify";
 import uploadImageToCloudinary from "../../../utils/uploadCloudinary.js";
@@ -15,6 +15,8 @@ const AddOrganisation = () => {
   const [email, setEmail] = useState("");
   const [logo, setLogo] = useState("");
   const [loader, setLoader] = useState(false);
+
+
 
   const handleFileInputChange = async (e) => {
     const file = e.target.files[0];
@@ -354,7 +356,7 @@ const AddOrganisation = () => {
                     </div>
 
                     <div className="flex items-center justify-center mt-4 m-4">
-                      {logo && !loader&& (
+                      {logo && !loader && (
                         <figure className="  w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center ">
                           <img
                             src={logo}
@@ -364,9 +366,13 @@ const AddOrganisation = () => {
                         </figure>
                       )}
 
-                      {loader  && (
+                      {loader && (
                         <figure className="  w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center ">
-                        <HashLoader color="#6056ec" size={30}    speedMultiplier={1.6}/>
+                          <HashLoader
+                            color="#6056ec"
+                            size={30}
+                            speedMultiplier={1.6}
+                          />
                         </figure>
                       )}
 

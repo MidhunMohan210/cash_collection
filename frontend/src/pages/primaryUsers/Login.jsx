@@ -61,9 +61,14 @@ function Login() {
         toast.success(res.data.message);
         const loginData = JSON.stringify(res.data.data);
         localStorage.setItem("pUserData", loginData);
-        navigate("/pUsers/home");
-        // setEmail("");
-        // setPassword("");
+        if(res.data.data.haveOut==true){
+          navigate('/pUsers/outstanding')
+        }else{
+
+          navigate("/pUsers/home");
+        }
+        setEmail("");
+        setPassword("");
       }, 1000);
     } catch (error) {
       setTimeout(() => {
