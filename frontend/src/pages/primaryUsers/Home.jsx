@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable react/no-unknown-property */
 import { useState } from "react";
-import AddOrganisation from "../../components/homePage/addOrganisation";
+import AddOrganisation from "../../components/homePage/AddOrganisation";
 import Sidebar from "../../components/homePage/Sidebar";
 import OrganizationList from "../../components/homePage/OrganisationList";
 import AddSecUsers from "../../components/homePage/AddSecUsers";

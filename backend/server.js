@@ -7,6 +7,7 @@ import tally from './routes/tallyRoute.js'
 import connectDB from "./config/db.js";
 import cors from 'cors'
 import cookieParser from "cookie-parser";
+import path from 'path'
 
 
 dotenv.config();
@@ -28,4 +29,21 @@ app.use("/api/pUsers",primaryUsers)
 app.use("/api/sUsers",secondaryUsers)
 app.use("/api/admin",admin)
 app.use("/api/tally",tally)
+
+if(process.env.NODE_ENV==="production"){
+  console.log(process.env.NODE_ENV);
+  console.log("hai")
+  const __dirname=path.resolve()
+  const parentDir = path.join(__dirname); 
+  console.log(parentDir)
+  app.use(express.static(path.join(parentDir,'/frontend/dist')))
+  app.get('*',(req,res)=>res.sendFile(path.resolve(parentDir,'frontend','dist','index.html')))
+}else{
+app.get('/',(req,res)=>{
+    res.send("Server is Ready")
+})
+}
+
+
+
 app.listen(port, () => console.log(`Server started on port ${port}`));
