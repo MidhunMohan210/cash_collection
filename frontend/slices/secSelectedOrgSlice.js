@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState={
-    secSelectedOrg:JSON.parse(localStorage.getItem('secOrg'))
-}
+const storedSecOrg = localStorage.getItem('secOrg');
+const initialState = {
+  secSelectedOrg: storedSecOrg ? JSON.parse(storedSecOrg) : null,
+};
 
 const secSelectedOrganizationSlice = createSlice({
     name: 'setSecSelectedOrganization',

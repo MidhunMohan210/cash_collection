@@ -4,6 +4,8 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import Pagination from "../../components/common/Pagination";
 import Sidebar from "../../components/homePage/Sidebar";
+import { IoReorderThreeSharp } from "react-icons/io5";
+
 // import './sidebar.css'
 
 function SecUsersList() {
@@ -14,6 +16,8 @@ function SecUsersList() {
   const [secondaryUsers, setSecondaryUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(5);
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
   useEffect(() => {
     const fetchOrganizations = async () => {
@@ -43,6 +47,12 @@ function SecUsersList() {
     };
     fetchSecondaryUsers();
   }, []);
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setShowSidebar(!showSidebar);
+    }
+  };
 
   console.log(organizations);
   console.log(secondaryUsers);
@@ -74,12 +84,16 @@ function SecUsersList() {
   return (
     <div className="flex">
       <div className="sb" style={{ height: "100vh" }}>
-        <Sidebar TAB={"agentLIst"} />
+        <Sidebar TAB={"agentLIst"} showBar={showSidebar} />
       </div>
 
       <body className="flex-1 antialiased font-sans  h-screen overflow-y-scroll">
 
-      <div className="block md:hidden bg-[#201450] text-white mb-1 p-3  text-lg">
+      <div className="block md:hidden bg-[#201450] text-white mb-1 p-3  text-lg flex items-center gap-3">
+      <IoReorderThreeSharp
+              onClick={handleToggleSidebar}
+              className="block md:hidden"
+            />
           <p> Retailers </p>
         </div>
         <div className="container mx-auto px-4 sm:px-8 ">

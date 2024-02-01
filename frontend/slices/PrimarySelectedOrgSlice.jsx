@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState={
-    selectedOrg:null
-}
+const storedSecOrg = localStorage.getItem('primaryOrg');
+console.log(storedSecOrg);
+const initialState = {
+  secSelectedOrg: storedSecOrg ? JSON.parse(storedSecOrg) : null,
+};
 
 const selectedOrganizationSlice = createSlice({
     name: 'selectedOrganization',
@@ -12,6 +14,8 @@ const selectedOrganizationSlice = createSlice({
 
         console.log(action.payload);
         state.selectedOrg=action.payload
+        const org=JSON.stringify(action.payload)
+        localStorage.setItem('primaryOrg',org)
       },
     },
   });

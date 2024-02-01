@@ -147,6 +147,7 @@ const AddOrganisation = () => {
 
   return (
     <div>
+   
       <div className=" ">
         <section className="py-12 bg-blueGray-50 h-screen overflow-scroll">
           <div className="w-full lg:w-8/12 px-4 mx-auto mt-6 pb-[30px] ">

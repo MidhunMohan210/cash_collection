@@ -13,6 +13,8 @@ import Sidebar from "../../components/homePage/Sidebar";
 import { Link } from "react-router-dom";
 import { FaWhatsapp } from "react-icons/fa";
 import {prRemoveSettlementData} from '../../../slices/prSettlementDataSlice'
+import { IoReorderThreeSharp } from "react-icons/io5";
+
 
 
 function Outstanding({ onTabChange }) {
@@ -21,11 +23,20 @@ function Outstanding({ onTabChange }) {
   const [organizations, setOrganizations] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedOrg, setSelectedOrg] = useState("");
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
   const dispatch = useDispatch();
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setShowSidebar(!showSidebar);
+    }
+  };
   const selectedOrgFromRedux = useSelector(
     (state) => state.setSelectedOrganization.selectedOrg
   );
+
   console.log(selectedOrgFromRedux);
   function formatAmount(amount) {
     return amount.toLocaleString("en-IN", { maximumFractionDigits: 2 });
@@ -97,19 +108,18 @@ function Outstanding({ onTabChange }) {
     <div className="flex">
 
 <div className="" style={{ height: "100vh" }}>
-        <Sidebar TAB={"outstanding"} />
+        <Sidebar TAB={"outstanding"} showBar={showSidebar} />
       </div>
 
     <div className="  flex-1 lg:px-[110px] h-screen overflow-y-scroll  md:mt-4 pb-   ">
       <div className="sticky top-0 flex flex-col z-30 bg-white">
         <div className="bg-white"></div>
         <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex items-center gap-2  ">
-          <IoIosArrowRoundBack
-            onClick={() => {
-              onTabChange("outstanding");
-            }}
-            className="text-3xl text-white"
-          />
+        <IoReorderThreeSharp
+              onClick={handleToggleSidebar}
+              className="block md:hidden text-white"
+            />
+         
           <p className="text-white text-md   font-bold ">Parties</p>
         </div>
         <div className=" mt-0 shadow-lg p-2 md:p-0">

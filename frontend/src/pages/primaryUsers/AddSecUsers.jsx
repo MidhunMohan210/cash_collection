@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { FaRegEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 import Sidebar from "../../components/homePage/Sidebar";
+import { IoReorderThreeSharp } from "react-icons/io5";
+
 function AddSecUsers() {
   const [organizations, setOrganizations] = useState([]);
   const [name, setName] = useState("");
@@ -12,6 +14,8 @@ function AddSecUsers() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
   useEffect(() => {
     const fetchOrganizations = async () => {
@@ -28,6 +32,13 @@ function AddSecUsers() {
     };
     fetchOrganizations();
   }, []);
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setShowSidebar(!showSidebar);
+    }
+  };
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -115,18 +126,25 @@ function AddSecUsers() {
   return (
     <div className="flex">
       <div className="" style={{ height: "100vh" }}>
-        <Sidebar TAB={"addSec"} />
+        <Sidebar TAB={"addSec"}  showBar={showSidebar} />
       </div>
 
       <div className="flex-1 ">
-        <section className="py-12 bg-blueGray-50 h-screen overflow-y-scroll">
+        <section className=" bg-blueGray-50 h-screen overflow-y-scroll">
+        <div className="block  bg-[#201450] text-white mb-2 p-3 flex items-center gap-3 sticky top-0 z-20 ">
+        <IoReorderThreeSharp
+              onClick={handleToggleSidebar}
+              className="block md:hidden"
+            />
+          <p> Add Retailers </p>
+        </div>
           <div className="w-full lg:w-8/12 px-4 mx-auto mt-6 pb-[30px]">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               <div className="rounded-t bg-white mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
-                  <h6 className="text-blueGray-700 text-xl font-bold">
-                    Add Secondary Users
-                  </h6>
+                  {/* <h6 className="text-blueGray-700 text-xl font-bold">
+                    Add Retailers
+                  </h6> */}
                   <button
                     className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 transform hover:scale-105"
                     type="button"

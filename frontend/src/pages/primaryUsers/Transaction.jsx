@@ -7,12 +7,16 @@ import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { ImCancelCircle } from "react-icons/im";
 import Sidebar from "../../components/homePage/Sidebar";
+import { IoReorderThreeSharp } from "react-icons/io5";
+
 
 function Transaction() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [refresh, setRefresh] = useState(false);
   const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0]);
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
   console.log(dateFilter);
 
@@ -30,7 +34,6 @@ function Transaction() {
         // dispatch(addData(res.data.outstandingData));
       } catch (error) {
         console.log(error);
-        toast.error(error.response.data.message);
       }
     };
     fetchTransactions();
@@ -68,24 +71,28 @@ function Transaction() {
     }
   };
 
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setShowSidebar(!showSidebar);
+    }
+  };
+
   console.log(data);
 
   return (
     <div className="flex">
       <div>
-        <Sidebar TAB={"transaction"} />
+        <Sidebar TAB={"transaction"}  showBar={showSidebar} />
       </div>
       <div className="flex-1">
         <div className=" flex-1  lg:px-[110px] h-screen overflow-y-scroll  md:mt-4 pb-   ">
           <div className="sticky top-0 flex flex-col z-30 bg-white">
             <div className="bg-white"></div>
             <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex items-center gap-2  ">
-              {/* <IoIosArrowRoundBack
-              // onClick={() => {
-              //   onTabChange("outstanding");
-              // }}
-              className="text-3xl text-white"
-            /> */}
+            <IoReorderThreeSharp
+              onClick={handleToggleSidebar}
+              className="block md:hidden text-white"
+            />
               <p className="text-white text-md   font-bold ">Transactions</p>
             </div>
             <div className=" mt-0 shadow-lg p-2 md:p-0">

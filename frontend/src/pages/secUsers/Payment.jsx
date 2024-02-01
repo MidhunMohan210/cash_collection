@@ -10,38 +10,31 @@ import { useNavigate } from "react-router-dom";
 
 function Payment() {
   const [method, setMethod] = useState("");
-  const [banks,setBanks]=useState([])
+  const [banks, setBanks] = useState([]);
   console.log(method);
   const [note, setNote] = useState("");
 
-  const cmp_id=useSelector((state)=>state.secSelectedOrganization.secSelectedOrg._id)
+  const cmp_id = useSelector(
+    (state) => state.secSelectedOrganization.secSelectedOrg._id
+  );
 
   console.log(cmp_id);
 
-
-  useEffect(()=>{
-
+  useEffect(() => {
     const fetchBank = async () => {
       try {
         const res = await api.get(`/api/sUsers/fetchBanks/${cmp_id}`, {
-          withCredentials: true, 
+          withCredentials: true,
         });
-  
+
         console.log(res.data);
-        setBanks(res.data.data)
-  
+        setBanks(res.data.data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchBank()
-
-  },[])
-
-
-
-
-
+    fetchBank();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -50,6 +43,11 @@ function Payment() {
     chequeNumber: "",
     chequeDate: "",
     narration: "",
+  });
+
+  const [upi, SetUpi] = useState({
+    bank: "",
+    note: "",
   });
 
   const banksInKerala = [
@@ -66,7 +64,6 @@ function Payment() {
   );
 
   const secUserData = JSON.parse(localStorage.getItem("sUserData"));
-
 
   const validateChequeDetails = () => {
     if (!chequeDetails.bank) {
@@ -92,26 +89,47 @@ function Payment() {
     return true;
   };
 
-  const confirmCollection = async () => {
 
-    if(method==null || method ==""){
-      toast.error("Select a payment method")
+  const validateUpiDetails=()=>{
+    if (!upi.bank) {
+      toast.error("Please select a bank for cheque payment.");
+      return false;
+    }
+
+    return true;
+
+  }
+
+  const confirmCollection = async () => {
+    if (method == null || method == "") {
+      toast.error("Select a payment method");
     }
 
     if (method === "cheque" && !validateChequeDetails()) {
-      
+      return;
+    }
+    if (method === "upi" && !validateUpiDetails()) {
       return;
     }
 
     const collectionData = {
       collectionDetails: settlementDetails,
       PaymentMethod: method,
-      paymentDetails: method === "cheque" ? chequeDetails : note,
+      paymentDetails: method,
       agentName: secUserData.name,
       agentId: secUserData._id,
     };
 
-    console.log(collectionData);
+    if (method === "cheque") {
+      collectionData.paymentDetails = chequeDetails;
+    } else if (method === "upi") {
+      collectionData.paymentDetails = upi;
+    } else {
+      collectionData.paymentDetails = {
+        bank: "cash",
+        note,
+      };
+    }
 
     try {
       const res = await api.post(
@@ -129,7 +147,7 @@ function Payment() {
       toast.success(res.data.message);
 
       setTimeout(() => {
-        navigate("/sUsers/outstanding");
+        navigate("/sUsers/transaction");
       }, 2000);
 
       // dispatch(addData(res.data.outstandingData));
@@ -147,7 +165,7 @@ function Payment() {
         <div className="bg-[#eaeaea] flex flex-col h-screen  ">
           <div className="bg-[#012a4a] shadow-lg px-4 py-4 pb-3 flex justify-between items-center z-10  ">
             <div className="flex items-center gap-2">
-              <IoIosArrowRoundBack className="text-3xl text-white " />
+              {/* <IoIosArrowRoundBack className="text-3xl text-white " /> */}
               <p className="text-md text-white font-bold  ">Payment Method</p>
             </div>
             <p className="text-[12px] text-white mt-1 font-bold  ">
@@ -240,7 +258,7 @@ function Payment() {
               </div>
 
               <div className="px-4 mt-5">
-                {(method === "cash" || method === "upi") && (
+                {method === "cash" && (
                   <div className="mb-4 mx-4">
                     <label className="block text-sm font-bold mb-2 ">
                       Note:
@@ -250,6 +268,48 @@ function Payment() {
                         setNote(e.target.value);
                       }}
                       value={note}
+                      type="text"
+                      className="w-full px-5 py-2  focus:border-blue-500 rounded shadow-lg"
+                      placeholder="Enter notes..."
+                    />
+                  </div>
+                )}
+
+                {method === "upi" && (
+                  <div className="mb-4 mx-4">
+                    <div className="mb-2">
+                      <label className="block text-sm font-bold mr-2 mb-2">
+                        Bank:
+                      </label>
+                      <select
+                        onChange={(e) => {
+                          SetUpi({
+                            ...upi,
+                            bank: e.target.value,
+                          });
+                        }}
+                        value={upi.bank}
+                        className="w-full px-3 py-2 border focus:border-blue-500 rounded shadow-lg"
+                      >
+                        {/* Map through the array of banks and create options */}
+                        {banks.map((bank, index) => (
+                          <option key={index} value={bank.bank_ledname}>
+                            {bank.bank_ledname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <label className="block text-sm font-bold mb-2 ">
+                      Note:
+                    </label>
+                    <input
+                      onChange={(e) => {
+                        SetUpi({
+                          ...upi,
+                          note: e.target.value,
+                        });
+                      }}
+                      value={upi.note}
                       type="text"
                       className="w-full px-5 py-2  focus:border-blue-500 rounded shadow-lg"
                       placeholder="Enter notes..."

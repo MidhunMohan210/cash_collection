@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSecSelectedOrganization ,removeSecSelectedOrg} from "../../../slices/secSelectedOrgSlice";
 import { Link } from "react-router-dom";
 
-function SidebarSec({ onTabChange, TAB, }) {
+function SidebarSec({ onTabChange, TAB,showBar }) {
   console.log(TAB);
   const [showSidebar, setShowSidebar] = useState(false);
   const [userData, setUserData] = useState({});
@@ -42,11 +42,20 @@ function SidebarSec({ onTabChange, TAB, }) {
     getUserData();
   }, []);
 
-  const handleToggleSidebar = () => {
+  useEffect(() => {
     if (window.innerWidth < 768) {
       setShowSidebar(!showSidebar);
     }
-  };
+  }, [showBar]);
+
+  useEffect(()=>{
+
+    if (window.innerWidth < 768) {
+      setShowSidebar(false);
+    }
+
+  },[])
+
   const handleSidebarItemClick = (newTab) => {
     if (window.innerWidth < 768) {
       setShowSidebar(false);
@@ -85,24 +94,18 @@ function SidebarSec({ onTabChange, TAB, }) {
   return (
     <div>
       <div className={`md:hidden absolute`}>
-        <IoReorderThree
-          onClick={handleToggleSidebar}
-          className="text-4xl ml-4 mt-3"
-        />
+     
       </div>
 
       <aside
         className={` ${
-          showSidebar ? "z-10 block absolute h-[125vh] " : " hidden md:block"
+          showSidebar ? "z-50 block absolute h-[125vh] " : " hidden md:block"
         } flex flex-col w-64 h-screen  px-4 py-8  bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
           
         overflow-y-auto`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        <IoReorderThree
-          onClick={handleToggleSidebar}
-          className="text-4xl ml-0 mt-[-20px] text-white block md:hidden"
-        />
+       
 
         {/* <a href="#" className="mx-auto">
           <img

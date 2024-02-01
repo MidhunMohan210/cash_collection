@@ -8,7 +8,7 @@ const organizationSchema = new mongoose.Schema(
     email:{type:String},
     mobile:{ type: Number },
     pin: { type: Number },
-    gstNum:{ type: Number },
+    gstNum:{ type: String },
     country: { type: String },
     logo: { type: String },
     state: { type: String },

@@ -4,21 +4,30 @@ import { FaArrowDown } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../api/api";
-import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeSettlementData } from "../../../slices/settlementDataSlice";
 import { FaWhatsapp } from "react-icons/fa";
-import { PiDotsThreeOutline } from "react-icons/pi";
-
+import { IoReorderThreeSharp } from "react-icons/io5";
 
 
 function Outstanding() {
   const [data, setData] = useState([]);
+  const [showSidebar, setShowSidebar] = useState(false);
+
 
   const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
+  const currOrg=useSelector((state)=>state.secSelectedOrganization.secSelectedOrg)
+  console.log(currOrg);
+
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setShowSidebar(!showSidebar);
+    }
+  };
 
   function formatAmount(amount) {
     return amount.toLocaleString("en-IN", { maximumFractionDigits: 2 });
@@ -65,17 +74,18 @@ function Outstanding() {
 
   return (
     <div className="flex">
-      <SidebarSec TAB={"outstanding"}  />
+      <SidebarSec TAB={"outstanding"} showBar={showSidebar} />
 
+     
       <div className=" flex-1  lg:px-[110px] h-screen overflow-y-scroll  md:mt-4 pb-   ">
         <div className="sticky top-0 flex flex-col z-30 bg-white">
           <div className="bg-white"></div>
-          <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex justify-between items-center gap-2  ">
-           
+          <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex  items-center gap-2  ">
+          <IoReorderThreeSharp
+              onClick={handleToggleSidebar}
+              className="block md:hidden text-white"
+            />
             <p className="text-white text-md   font-bold ">Outstandings</p>
-            <PiDotsThreeOutline
-            onClick={()=>{handleToggleSidebar()}}
-             className="text-white text-lg block md:hidden"/>
           </div>
           <div className=" mt-0 shadow-lg p-2 md:p-0">
             <form>
@@ -125,6 +135,8 @@ function Outstanding() {
           </div>
         </div>
 
+        {currOrg ? (
+
         <div className="grid grid-cols-1 gap-4 mt-6 text-center  ">
           {finalData.map((el, index) => (
             <Link
@@ -170,6 +182,15 @@ function Outstanding() {
             </Link>
           ))}
         </div>
+        ): (
+
+          <div className="flex justify-center h-screen items-center ">
+            
+            <p className="font-semibold text-lg " >Select an organisation first</p>
+          </div>
+
+        )}
+
       </div>
     </div>
   );

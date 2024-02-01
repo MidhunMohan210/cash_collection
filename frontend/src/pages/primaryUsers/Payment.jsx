@@ -5,8 +5,9 @@ import { useState ,useEffect} from "react";
 import { useSelector } from "react-redux";
 import api from "../../api/api";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import Sidebar from "../../components/homePage/Sidebar";
+import dayjs from "dayjs";
 
 function Payment() {
   const [method, setMethod] = useState("");
@@ -49,14 +50,15 @@ function Payment() {
     narration: "",
   });
 
-  const banksInKerala = [
-    "Select a bank",
-    "State Bank of India",
-    "Federal Bank",
-    "ICICI Bank",
-    "South Indian Bank",
-    "Canara Bank",
-  ];
+  const [upi,SetUpi]=useState({
+    bank:"",
+    note:""
+  })
+
+
+  console.log(upi);
+
+
 
   const settlementDetails = useSelector(
     (state) => state.prSettlementData.prSettlementData
@@ -100,14 +102,27 @@ function Payment() {
       return;
     }
 
+
+    console.log(upi);
+
     const collectionData = {
       collectionDetails: settlementDetails,
       PaymentMethod: method,
-      paymentDetails: method === "cheque" ? chequeDetails : note,
       agentName: pUserData?.userName,
       agentId: pUserData?._id,
     };
-
+    
+    if (method === "cheque") {
+      collectionData.paymentDetails = chequeDetails;
+    } else if (method === "upi") {
+      collectionData.paymentDetails = upi;
+    } else  {
+      collectionData.paymentDetails = {
+        bank:"cash",
+        note
+      }
+    }
+    
     console.log(collectionData);
 
     try {
@@ -126,7 +141,7 @@ function Payment() {
       toast.success(res.data.message);
 
       setTimeout(() => {
-        navigate("/pUsers/outstanding");
+        navigate("/pUsers/transaction");
       }, 2000);
 
       // dispatch(addData(res.data.outstandingData));
@@ -144,11 +159,16 @@ function Payment() {
         <div className="bg-[#eaeaea] flex flex-col h-screen  ">
           <div className="bg-[#012a4a] shadow-lg px-4 py-4 pb-3 flex justify-between items-center z-10  ">
             <div className="flex items-center gap-2">
-              <IoIosArrowRoundBack className="text-3xl text-white " />
+              {/* <Link  to={'/pUsers/outstandingDetails'}> */}
+
+              {/* <IoIosArrowRoundBack className="text-3xl text-white " /> */}
+              {/* </Link> */}
               <p className="text-md text-white font-bold  ">Payment Method</p>
             </div>
             <p className="text-[12px] text-white mt-1 font-bold  ">
-              23 JAN 2024
+
+              {dayjs(new Date()).format('DD/MM/YYYY')}
+              
             </p>
           </div>
 
@@ -237,7 +257,7 @@ function Payment() {
               </div>
 
               <div className="px-4 mt-5">
-                {(method === "cash" || method === "upi") && (
+                {(method === "cash" ) && (
                   <div className="mb-4 mx-4">
                     <label className="block text-sm font-bold mb-2 ">
                       Note:
@@ -247,6 +267,47 @@ function Payment() {
                         setNote(e.target.value);
                       }}
                       value={note}
+                      type="text"
+                      className="w-full px-5 py-2  focus:border-blue-500 rounded shadow-lg"
+                      placeholder="Enter notes..."
+                    />
+                  </div>
+                )}
+                {(method === "upi" ) && (
+                  <div className="mb-4 mx-4">
+                     <div className="mb-2">
+                      <label className="block text-sm font-bold mr-2 mb-2">
+                        Bank:
+                      </label>
+                      <select
+                    onChange={(e) => {
+                      SetUpi({
+                        ...upi,
+                        bank: e.target.value,  
+                      });
+                    }}
+                        value={upi.bank}
+                        className="w-full px-3 py-2 border focus:border-blue-500 rounded shadow-lg"
+                      >
+                        {/* Map through the array of banks and create options */}
+                        {banks.map((bank, index) => (
+                          <option key={index} value={bank.bank_ledname}>
+                             {bank.bank_ledname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <label className="block text-sm font-bold mb-2 ">
+                      Note:
+                    </label>
+                    <input
+                       onChange={(e) => {
+                        SetUpi({
+                          ...upi,
+                          note: e.target.value,  
+                        });
+                      }}
+                      value={upi.note}
                       type="text"
                       className="w-full px-5 py-2  focus:border-blue-500 rounded shadow-lg"
                       placeholder="Enter notes..."

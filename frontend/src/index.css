@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 
-@layer base {
+/* @layer base {
     section{
-        @apply py-[20px]
+        @apply px-[20px]
     }
-}
+} */
 
 
 /* @layer components {
