@@ -125,6 +125,7 @@ export const fetchOutstandingDetails = async (req, res) => {
     const outstandings = await TallyData.find({
       party_id: partyId,
       cmp_id: cmp_id,
+      bill_pending_amt: { $gt: 0 } 
     });
     if (outstandings) {
       return res.status(200).json({
