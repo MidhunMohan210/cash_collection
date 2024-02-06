@@ -7,7 +7,7 @@ export const saveDataFromTally = async (req, res) => {
     console.log("body",req.body);
     const dataToSave = await req.body.data;
     console.log("dataToSave", dataToSave);
-    let docCount = await TallyData.find({}).countDocuments();
+    // let docCount = await TallyData.find({}).countDocuments();
 
     // Use Promise.all to parallelize document creation or update
     const savedData = await Promise.all(
@@ -18,14 +18,6 @@ export const saveDataFromTally = async (req, res) => {
           bill_no: dataItem.bill_no,
           Primary_user_id: dataItem.Primary_user_id,
         });
-
-        // If the document exists, use its serialNo; otherwise, assign a new serialNo
-        // if (existingDocument) {
-        //   dataItem.serialNo = existingDocument.serialNo;
-        // } else {
-        //   docCount = docCount + 1;
-        //   dataItem.serialNo = docCount;
-        // }
 
         // Use findOneAndUpdate to find an existing document based on some unique identifier
         const updatedDocument = await TallyData.findOneAndUpdate(

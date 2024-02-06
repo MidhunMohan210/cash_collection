@@ -67,13 +67,17 @@ export const login = async (req, res) => {
   //email === email or mobile
   const { email, password } = req.body;
 
-  try {
-    const primaryUser = await PrimaryUser.findOne({
-      $or: [{ email: email }, { mobile: email }],
-    });
+  console.log(email);
 
-    if (!primaryUser) {
-      return res.status(404).json({ message: "Invalid User" });
+  try {
+    let primaryUser;
+    // Check if the provided email looks like an email address
+    if (email.includes('@')) {
+      // If it's an email address, find the user by email
+      primaryUser = await PrimaryUser.findOne({ email: email });
+    } else {
+      // If it's not an email address, assume it's a mobile number and find the user by mobile number
+      primaryUser = await PrimaryUser.findOne({ mobile: email });
     }
 
     if (!primaryUser.isApproved) {
