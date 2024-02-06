@@ -6,7 +6,7 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./sidebar.css";
-import "animate.css/animate.min.css";
+// import "animate.css/animate.min.css";
 import {useDispatch } from "react-redux";
 import { removeAdminData } from "../../../slices/adminData";
 import { RiUserFollowFill } from "react-icons/ri";
@@ -172,8 +172,8 @@ function AdminSidebar({ onTabChange }) {
             </a>
             {expandedSections.organizationList && (
               <div
-                className="pl-8 mt-2 text-white flex flex-col gap-2 pt-2 animate__animated animate__fadeIn"
-                style={{ animationDuration: "5s" }}
+                className="pl-8 mt-2 text-white flex flex-col gap-2 pt-2"
+                
               >
                 {/* Add your sections here, for example: */}
                 <label
