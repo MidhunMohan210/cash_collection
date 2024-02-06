@@ -4,6 +4,7 @@ import setSelectedOrganizationReducer from '../slices/PrimarySelectedOrgSlice'
 import secSelectedOrgReducer from '../slices/secSelectedOrgSlice'
 import settlementDataReducer from '../slices/settlementDataSlice'
 import prSettlementDataReducer from '../slices/prSettlementDataSlice'
+import adminDataReducer from '../slices/adminData'
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
         setSelectedOrganization:setSelectedOrganizationReducer,
         secSelectedOrganization:secSelectedOrgReducer,
         settlementData:settlementDataReducer,
-        prSettlementData:prSettlementDataReducer
+        prSettlementData:prSettlementDataReducer,
+        adminData:adminDataReducer
         
 
     },

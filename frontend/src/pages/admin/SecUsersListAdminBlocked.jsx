@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Pagination from "../../components/common/Pagination";
 
-function SecUsersListAdmin() {
+function SecUsersListAdminBlocked() {
   const [organizations, setOrganizations] = useState([]);
   const [organizationNames, setOrganizationNames] = useState([]);
   const [selectedOrg, setSelectedOrg] = useState("");
@@ -76,7 +76,8 @@ function SecUsersListAdmin() {
 
   //   Filter organizations based on selected owner
   const filteredSecUsers = secondaryUsers.filter((user) => {
-    const live=user.isBlocked===false
+    const live=user.isBlocked===true
+
     const orgFilter =
       selectedOrg === "" ||
       user.organization.some((org) => org.name === selectedOrg);
@@ -135,7 +136,7 @@ function SecUsersListAdmin() {
 
   return (
     <div>
-      <body className="antialiased font-sans bg-white h-screen ">
+      <body className="antialiased font-sans bg-white h-screen">
         <div className="container mx-auto px-4 sm:px-8 ">
           <div className="py-8">
             <div>
@@ -342,4 +343,4 @@ function SecUsersListAdmin() {
   );
 }
 
-export default SecUsersListAdmin;
+export default SecUsersListAdminBlocked;

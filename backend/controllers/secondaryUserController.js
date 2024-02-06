@@ -3,6 +3,8 @@ import generateSecToken from "../utils/generateSecondaryToken.js";
 import TallyData from "../models/TallyData.js";
 import TransactionModel from "../models/TransactionModel.js";
 import  BankDetails from '../models/bankModel.js'
+import generateNumericOTP from "../utils/generateOtp.js";
+import nodemailer from 'nodemailer'
 
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
@@ -14,7 +16,9 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const secUser = await SecondaryUser.findOne({ email });
+    const secUser = await SecondaryUser.findOne({
+      $or: [{ email: email }, { mobile: email }],
+    });
 
     if (!secUser) {
       return res.status(404).json({ message: "Invalid User" });
@@ -360,3 +364,127 @@ export const fetchBanks = async (req, res) => {
     return res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+
+// @desc send otp for forgot password
+// route GET/api/sUsers/fetchBanks/:cmp_id
+
+export const sendOtp = async (req, res) => {
+  const { email } = req.body;
+  console.log("email", email);
+
+  try {
+    const validEmail = await SecondaryUser.findOne({ email: email });
+    if (!validEmail) {
+      return res.status(400).json({ message: "Enter the registered email " });
+    }
+
+    const otp = generateNumericOTP(6);
+    console.log("otp", otp);
+
+    // Save OTP in the database
+    const saveOtp = await SecondaryUser.updateOne(
+      { email },
+      { $set: { otp } }
+    );
+
+    // Create Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "solutions@camet.in",
+        pass: "gerjssfiitsgidaq",
+      },
+    });
+
+    // Email message for password reset
+    const mailOptions = {
+      from: "solutions@camet.in",
+      to: email,
+      subject: "Password Reset OTP - Camet IT Solutions",
+      text: `Dear User,\n\nYou have requested to reset your password for Camet IT Solutions account.\n\nYour OTP for password reset is: ${otp}\n\nIf you didn't request this, please ignore this email.\n\nThank you,\nCamet IT Solutions`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Error sending email" });
+      } else {
+        console.log("Email Sent:" + info.response);
+        return res
+          .status(200)
+          .json({ message: "OTP sent successfully", data: otp });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+// @desc check otp
+//  route POST/api/sUsers/submitOtp
+
+export const submitOtp = async (req, res) => {
+  const { Otp, otpEmailSec } = req.body;
+  console.log("otpEmailSec",otpEmailSec);
+
+  try {
+    // Retrieve user data based on the provided email
+    const user = await SecondaryUser.findOne({ email: otpEmailSec });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user has an OTP and if it matches the submitted OTP
+    if (user.otp !== parseInt(Otp)) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    // // Check if the OTP has expired
+    // if (user.otpExpiration && user.otpExpiration < Date.now()) {
+    //   return res.status(400).json({ message: 'OTP has expired' });
+    // }
+
+    // If all checks pass, you can consider the OTP valid
+    return res.status(200).json({ message: 'OTP is valid' });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// @desc reset password
+// route POST/api/sUsers/resetPassword
+
+export const resetPassword = async (req, res) => {
+  const { password, otpEmailSec } = req.body;
+
+  try {
+    // Retrieve user data based on the provided email
+    const user = await SecondaryUser.findOne({ email: otpEmailSec });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update the user's password
+    user.password = password;
+
+    // Save the updated user data
+    await user.save();
+
+    return res.status(200).json({ message: 'Password reset successful' });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+

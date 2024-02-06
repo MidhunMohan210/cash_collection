@@ -4,7 +4,7 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import Pagination from "../../components/common/Pagination";
 
-function Organisation() {
+function OrganisationsBlocked() {
   const [organizations, setOrganizations] = useState([]);
   const [owners, setOwners] = useState([]);
   const [selectedOwner, setSelectedOwner] = useState("");
@@ -46,7 +46,7 @@ function Organisation() {
 
   // Filter organizations based on selected owner
   const filteredOrganizations = organizations.filter((org) => {
-    const live=org.isApproved=== true;
+    const live=org.isApproved=== false;
     const ownerFilter =
       selectedOwner === "" || org.owner.userName === selectedOwner;
     const searchFilter = org.name
@@ -83,11 +83,7 @@ function Organisation() {
 
   return (
     <div>
-      <body className="antialiased font-sans h-screen overflow-y-scroll"  
-      style={{
-          scrollbarWidth: "thin",
-          scrollbarColor: "transparent transparent",
-        }}>
+      <body className="antialiased font-sans h-screen">
         <div className="container mx-auto px-4 sm:px-8 ">
           <div className="py-8">
             <div>
@@ -289,4 +285,4 @@ function Organisation() {
   );
 }
 
-export default Organisation;
+export default OrganisationsBlocked;

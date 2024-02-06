@@ -166,7 +166,7 @@ const AddOrganisation = () => {
   return (
     <div className="flex ">
       <div className="" style={{ height: "100vh" }}>
-        <Sidebar TAB={"addOrg"} showBar={showSidebar} />
+        <Sidebar TAB={"addOrg"} showBar={showSidebar}  />
       </div>
 
       <div className=" ">

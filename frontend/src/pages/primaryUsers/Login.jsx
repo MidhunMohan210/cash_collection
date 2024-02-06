@@ -36,10 +36,10 @@ function Login() {
       toast.error("All fields must be filled");
       return;
     }
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
-      toast.error("Invalid email address");
-      return;
-    }
+    // if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+    //   toast.error("Invalid email address");
+    //   return;
+    // }
 
     setLoader(true);
 
@@ -65,7 +65,7 @@ function Login() {
           navigate('/pUsers/outstanding')
         }else{
 
-          navigate("/pUsers/home");
+          navigate("/pUsers/addOrganization");
         }
         setEmail("");
         setPassword("");
@@ -123,8 +123,8 @@ function Login() {
               <form onSubmit={submitHandler}>
                 <div className="mt-5">
                   <input
-                    type="text"
-                    placeholder="Email"
+                    type=""
+                    placeholder="Email or mobile"
                     className="border border-gray-400 py-1 px-2 w-full"
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -151,18 +151,10 @@ function Login() {
                   </div>
                 </div>
 
-                <div className="mt-5">
-                  <input type="checkbox" className="border border-gray-400" />
-                  <span>
-                    I accept the{" "}
-                    <a href="#" className="text-purple-500 font-semibold">
-                      Terms of Use
-                    </a>{" "}
-                    &{" "}
-                    <a href="#" className="text-purple-500 font-semibold">
-                      Privacy Policy
-                    </a>
-                  </span>
+                <div className="text-sm mt-3 cursor-pointer underline text-blue-500 ">
+                  <Link to={'/pUsers/forgotPassword'}>
+                 Forgot password
+                 </Link>
                 </div>
                 <div className="mt-5">
                   <button

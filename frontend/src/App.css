@@ -159,3 +159,45 @@
     border-radius: 50%;
     transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
   }
+
+
+
+
+  /* toggle button for block */
+    /* toggle button admin subreption end  */
+
+
+    #button-5 .checkbox:checked:active + .knobs:before {
+      margin-left: -26px;
+    }
+    
+    #button-5 .checkbox:checked + .knobs:before {
+      content: "B";
+      left: 32px;
+      background-color: #c5390f;
+    }
+    
+    #button-5 .checkbox:checked ~ .layer {
+      background-color: #c6e0f1;
+    }
+  
+    #button-5 .knobs:before {
+      content: "L";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 10px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 9px 4px;
+      background-color: #0f8b4b;
+      border-radius: 50%;
+      transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+    }

@@ -7,15 +7,19 @@ import TransactionModel from "../models/TransactionModel.js";
 import BankDetails from "../models/bankModel.js";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import nodemailer from "nodemailer";
+import primaryUserModel from "../models/primaryUserModel.js";
+import generateNumericOTP from "../utils/generateOtp.js";
 
 // @desc Register Primary user
 // route POST/api/pUsers/register
 
 export const registerPrimaryUser = async (req, res) => {
   try {
-    const { userName, mobile, email, password } = req.body;
+    const { userName, mobile, email, password, subscription } = req.body;
 
     const userExists = await PrimaryUser.findOne({ email });
+    const mobileExists = await PrimaryUser.findOne({ mobile });
 
     if (userExists) {
       return res
@@ -23,11 +27,18 @@ export const registerPrimaryUser = async (req, res) => {
         .json({ success: false, message: "Email already exists" });
     }
 
+    if (mobileExists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Mobile number already exists" });
+    }
+
     const user = new PrimaryUser({
       userName,
       mobile,
       email,
       password,
+      subscription,
     });
 
     const result = await user.save();
@@ -53,10 +64,13 @@ export const registerPrimaryUser = async (req, res) => {
 // route POST/api/pUsers/login
 
 export const login = async (req, res) => {
+  //email === email or mobile
   const { email, password } = req.body;
 
   try {
-    const primaryUser = await PrimaryUser.findOne({ email });
+    const primaryUser = await PrimaryUser.findOne({
+      $or: [{ email: email }, { mobile: email }],
+    });
 
     if (!primaryUser) {
       return res.status(404).json({ message: "Invalid User" });
@@ -84,9 +98,8 @@ export const login = async (req, res) => {
     const haveOutstanding = await TallyData.find({
       Primary_user_id: primaryUser._id,
     });
-   
 
-    haveOutstanding.length>0 ? haveOut=true :haveOut=false
+    haveOutstanding.length > 0 ? (haveOut = true) : (haveOut = false);
 
     const { userName, _id } = primaryUser._doc;
     const token = generatePrimaryUserToken(res, primaryUser._id);
@@ -237,19 +250,15 @@ export const addSecUsers = async (req, res) => {
     const result = await user.save();
 
     if (result) {
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Secondary user registration is successful",
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Secondary user registration is successful",
+      });
     } else {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Secondary user registration failed",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Secondary user registration failed",
+      });
     }
   } catch (error) {
     console.error(error);
@@ -339,8 +348,8 @@ export const fetchOutstandingDetails = async (req, res) => {
       Primary_user_id: userId,
       party_id: partyId,
       cmp_id: cmp_id,
-      bill_pending_amt: { $gt: 0 } 
-    });
+      bill_pending_amt: { $gt: 0 },
+    }).sort({bill_date:1});
     if (outstandings) {
       return res.status(200).json({
         outstandings: outstandings,
@@ -560,5 +569,165 @@ export const fetchBanks = async (req, res) => {
     return res
       .status(500)
       .json({ status: false, message: "Internal server error" });
+  }
+};
+
+// @desc fetch banks for showing added bank list
+// route GET/api/sUsers/fetchBanks/:cmp_id
+
+export const bankList = async (req, res) => {
+  console.log("jdasjdbakdak");
+  const userId = req.pUserId;
+  console.log("userId", userId);
+  try {
+    const bankData = await BankDetails.aggregate([
+      {
+        $match: {
+          Primary_user_id: userId,
+        },
+      },
+      {
+        $project: {
+          bank_ledname: 1,
+          ac_no: 1,
+          ifsc: 1,
+        },
+      },
+    ]);
+
+    console.log(bankData);
+
+    if (bankData.length > 0) {
+      return res
+        .status(200)
+        .json({ message: "bankData fetched", data: bankData });
+    } else {
+      return res.status(404).json({ message: "Bank data not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
+  }
+};
+
+// @desc send otp for forgot password
+// route GET/api/sUsers/fetchBanks/:cmp_id
+
+export const sendOtp = async (req, res) => {
+  const { email } = req.body;
+  console.log("email", email);
+
+  try {
+    const validEmail = await primaryUserModel.findOne({ email: email });
+    if (!validEmail) {
+      return res.status(400).json({ message: "Enter the registered email " });
+    }
+
+    const otp = generateNumericOTP(6);
+    console.log("otp", otp);
+
+    // Save OTP in the database
+    const saveOtp = await primaryUserModel.updateOne(
+      { email },
+      { $set: { otp } }
+    );
+
+    // Create Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "solutions@camet.in",
+        pass: "gerjssfiitsgidaq",
+      },
+    });
+
+    // Email message for password reset
+    const mailOptions = {
+      from: "solutions@camet.in",
+      to: email,
+      subject: "Password Reset OTP - Camet IT Solutions",
+      text: `Dear User,\n\nYou have requested to reset your password for Camet IT Solutions account.\n\nYour OTP for password reset is: ${otp}\n\nIf you didn't request this, please ignore this email.\n\nThank you,\nCamet IT Solutions`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Error sending email" });
+      } else {
+        console.log("Email Sent:" + info.response);
+        return res
+          .status(200)
+          .json({ message: "OTP sent successfully", data: otp });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+// @desc check otp
+//  route POST/api/pUsers/submitOtp
+
+export const submitOtp = async (req, res) => {
+  const { Otp, otpEmail } = req.body;
+
+  try {
+    // Retrieve user data based on the provided email
+    const user = await primaryUserModel.findOne({ email: otpEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user has an OTP and if it matches the submitted OTP
+    if (user.otp !== parseInt(Otp)) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    // // Check if the OTP has expired
+    // if (user.otpExpiration && user.otpExpiration < Date.now()) {
+    //   return res.status(400).json({ message: 'OTP has expired' });
+    // }
+
+    // If all checks pass, you can consider the OTP valid
+    return res.status(200).json({ message: 'OTP is valid' });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+// @desc reset password
+// route POST/api/pUsers/resetPassword
+
+export const resetPassword = async (req, res) => {
+  const { password, otpEmail } = req.body;
+
+  try {
+    // Retrieve user data based on the provided email
+    const user = await primaryUserModel.findOne({ email: otpEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update the user's password
+    user.password = password;
+
+    // Save the updated user data
+    await user.save();
+
+    return res.status(200).json({ message: 'Password reset successful' });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };

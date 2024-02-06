@@ -43,6 +43,34 @@ export const adminLogin = async (req, res) => {
   }
 };
 
+// @desc Log out  Admin
+// route POST/api/admin/logout
+
+// @desc Logout Primary user
+// route POST/api/pUsers/logout
+
+export const logout = async (req, res) => {
+  try {
+    res.cookie("jwt_admin", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    return res.status(200).json({
+      message: "Logged out",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ status: false, message: "Failed to login!" });
+  }
+};
+
+
+
+
+
+
+
 // @desc get admin data for side bar
 // route POST/api/admin/getAdminData
 
@@ -129,6 +157,46 @@ export const handlePrimaryApprove = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+// @desc handle deletion of primary user
+// route DELETE/api/admin/handlePrimaryDelete
+
+
+export const handlePrimaryDelete = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await PrimaryUsers.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Optionally, you can return a success message
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @desc handle block of primary user
 // route POST/api/admin/handlePrimaryBlock

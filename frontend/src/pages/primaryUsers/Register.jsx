@@ -7,8 +7,7 @@ import { Link } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 import api from "../../api/api.js";
-import {useNavigate} from 'react-router-dom'
-
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -19,8 +18,9 @@ const Register = () => {
   const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [subscription, setSubscription] = useState(''); 
 
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -29,6 +29,8 @@ const Register = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+
+  console.log(subscription);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -49,6 +51,16 @@ const Register = () => {
       toast.error("Invalid email address");
       return;
     }
+
+
+    if (subscription === "") {
+      toast.error("Select your subscription");
+      return;
+    }
+
+
+
+
     if (password !== confirmPassword) {
       toast.error("Password and Confirm Password do not match");
       return;
@@ -73,6 +85,7 @@ const Register = () => {
       mobile,
       email,
       password,
+      subscription
     };
     try {
       const res = await api.post("/api/pUsers/register", formData, {
@@ -90,10 +103,8 @@ const Register = () => {
         setPassword("");
         setConfirmPassword("");
 
-        navigate('/pUsers/login')
-        
+        navigate("/pUsers/login");
       }, 1000);
-      
     } catch (error) {
       setTimeout(() => {
         toast.error(error.response.data.message);
@@ -128,15 +139,15 @@ const Register = () => {
                 backgroundImage: `url(${registerBackground02})`,
               }}
             >
-              <h1 className="text-black text-3xl mb-3">Welcome</h1>
+              {/* <h1 className="text-black text-3xl mb-3">Welcome</h1> */}
               <div>
-                <p className="text-black">
+                {/* <p className="text-black">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Aenean suspendisse aliquam varius rutrum purus maecenas ac{" "}
                   <a href="#" className="text-purple-500 font-semibold">
                     Learn more
                   </a>
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="w-full lg:w-1/2 py-16  px-6 md:px-12 ">
@@ -177,6 +188,20 @@ const Register = () => {
                     }}
                     value={email}
                   />
+                </div>
+
+                <div className="mt-3">
+                  <select
+                    className="border border-gray-400 py-1 px-2 w-full"
+                    onChange={(e) => {
+                      setSubscription(e.target.value);
+                    }}
+                    value={subscription}
+                  >
+                    <option value="" disabled>Select your subscription</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
                 </div>
 
                 <div className="mt-5 relative">

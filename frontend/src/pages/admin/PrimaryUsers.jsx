@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import SecUserPopup from "../../components/admin/SecUserPopup";
 import Pagination from "../../components/common/Pagination";
+import { RiDeleteBin5Fill } from "react-icons/ri";
 
 function PrimaryUsers() {
   const [data, setData] = useState([]);
@@ -19,7 +20,7 @@ function PrimaryUsers() {
   const [filteredSecUsers, setFilteredSecUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(5);
-  const [option,setOption]=useState('');
+  const [option, setOption] = useState("");
 
   console.log(option);
 
@@ -42,7 +43,6 @@ function PrimaryUsers() {
 
   // console.log(secUsers);
   // console.log(org);
-
 
   const handleBlock = async (userId) => {
     const confirmResult = await Swal.fire({
@@ -119,17 +119,55 @@ function PrimaryUsers() {
       }
     }
   };
+  const handleDelete = async (userId) => {
+    const confirmResult = await Swal.fire({
+      title: "Are you sure?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, do it!",
+      cancelButtonText: "Cancel it",
+    });
+    if (confirmResult.isConfirmed) {
+      try {
+        const res = await api.delete(
+          `/api/admin/handlePrimaryDelete/${userId}`,
+          
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(res);
+        setRefresh(!refresh);
+        Swal.fire({
+          title: "Done!",
+          text: `${res.data.message}`,
+          icon: "success",
+        });
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          title: "Error!",
+          text: `${error.response.message}`,
+          icon: "error",
+        });
+      }
+    }
+  };
 
   const filteredData = data.filter((item) => {
     const isBlocked = item.isBlocked;
-  
+
     return (
       (item.userName.toLowerCase().includes(search.toLowerCase()) ||
         item.email.toLowerCase().includes(search.toLowerCase())) &&
-      (option === '' || (option === 'blocked' && isBlocked) || (option === 'unblocked' && !isBlocked))
+      (option === "" ||
+        (option === "blocked" && isBlocked) ||
+        (option === "unblocked" && !isBlocked))
     );
   });
-    
 
   const calculateExpiresAt = (createdAt, period) => {
     let expirationDate = dayjs(createdAt);
@@ -230,7 +268,13 @@ function PrimaryUsers() {
   return (
     <div className="relative">
       {/* <!-- component --> */}
-      <div className="bg-white p-8 rounded-md w-full h-screen">
+      <div
+        className="bg-white p-8 rounded-md w-full h-screen overflow-y-scroll"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "transparent transparent",
+        }}
+      >
         <div className=" flex items-center  pb-6">
           <div>
             <h2 className="text-gray-600 font-semibold">Primary Users</h2>
@@ -268,12 +312,11 @@ function PrimaryUsers() {
                 onChange={(e) => setOption(e.target.value)}
               >
                 <option value="">All</option>
-                <option value="blocked" >Blocked</option>
+                <option value="blocked">Blocked</option>
                 <option value="unblocked">Un Blocked</option>
                 {/* Add more options as needed */}
               </select>
             </div>
-        
           </div>
         </div>
         <div>
@@ -320,23 +363,19 @@ function PrimaryUsers() {
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Whatsapp
                     </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Delete
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentUsers.length > 0 ? (
                     currentUsers.map((item, index) => (
                       <tr key={index}>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <div className="flex items-center">
-                            {/* <div className="flex-shrink-0 w-10 h-10">
-                              <img
-                                className="w-full h-full rounded-full"
-                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                                alt=""
-                              />
-                            </div> */}
-                            <div className="ml-3">
-                              <p className="text-gray-900 whitespace-no-wrap">
+                        <td className="  px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <div className="flex">
+                            <div className="">
+                              <p className="text-gray-900 whitespace-nowrap">
                                 {item.userName}
                               </p>
                             </div>
@@ -410,7 +449,7 @@ function PrimaryUsers() {
                             </span>
                           </span>
                         </td> */}
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <span
                             onClick={() => {
                               handleBlock(item._id);
@@ -433,6 +472,25 @@ function PrimaryUsers() {
                               {item.isBlocked ? "Unblock " : "Block"}
                             </span>
                           </span>
+                        </td> */}
+
+                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                          <div
+                            class="toggle-button-cover"
+                            onClick={() => {
+                              handleBlock(item._id);
+                            }}
+                          >
+                            <div id="button-5" class="button r">
+                              <input
+                                className="checkbox"
+                                type="checkbox"
+                                checked={item.isBlocked === true}
+                              />
+                              <div className="knobs"></div>
+                              <div className="layer"></div>
+                            </div>
+                          </div>
                         </td>
                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                           <div
@@ -488,6 +546,10 @@ function PrimaryUsers() {
                               <div className="layer"></div>
                             </div>
                           </div>
+                        </td>
+
+                        <td className="flex justify-center items-center">
+                          <RiDeleteBin5Fill onClick={()=>{handleDelete(item._id)}} className="cursor-pointer mt-4 text-[#72283b] transform duration-100 hover:scale-125 text-lg" />
                         </td>
                       </tr>
                     ))

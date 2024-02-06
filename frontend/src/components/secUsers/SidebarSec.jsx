@@ -34,13 +34,23 @@ function SidebarSec({ onTabChange, TAB,showBar }) {
           withCredentials: true,
         });
         setUserData(res.data.data.userData);
-        setOrg(prevOrg);
+        if(prevOrg=='' || prevOrg==null){
+          console.log("haiii");
+          setOrg(res.data.data.userData.organization[0])
+          dispatch(setSecSelectedOrganization(res.data.data.userData.organization[0]))
+        }else{
+          setOrg(prevOrg);
+          console.log("haiii");
+         
+        }
       } catch (error) {
         console.log(error);
       }
     };
     getUserData();
   }, []);
+
+  console.log(userData);
 
   useEffect(() => {
     if (window.innerWidth < 768) {

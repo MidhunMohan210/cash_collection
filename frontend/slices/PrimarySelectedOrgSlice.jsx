@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const storedSecOrg = localStorage.getItem('primaryOrg');
 console.log(storedSecOrg);
 const initialState = {
-  secSelectedOrg: storedSecOrg ? JSON.parse(storedSecOrg) : null,
+  selectedOrg: storedSecOrg ? JSON.parse(storedSecOrg) : null,
 };
 
 const selectedOrganizationSlice = createSlice({
@@ -17,9 +17,14 @@ const selectedOrganizationSlice = createSlice({
         const org=JSON.stringify(action.payload)
         localStorage.setItem('primaryOrg',org)
       },
+
+      removeSelectedOrganization:(state,action)=>{
+        state.selectedOrg='';
+        localStorage.removeItem('primaryOrg')
+      }
     },
   });
 
 
-  export const {setSelectedOrganization}=selectedOrganizationSlice.actions
+  export const {setSelectedOrganization,removeSelectedOrganization}=selectedOrganizationSlice.actions
   export default selectedOrganizationSlice.reducer;

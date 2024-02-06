@@ -9,6 +9,8 @@ const secondaryUserSchema = new mongoose.Schema(
     password: { type: String },
     organization: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organization" }],
     primaryUser:{type:mongoose.Schema.Types.ObjectId,ref:"PrimaryUser"},
+    otp:{type:Number},
+
 
     isBlocked: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: true },

@@ -5,7 +5,7 @@ import { PropagateLoader } from "react-spinners";
 import api from "../../api/api.js";
 import { FaRegEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 function SecLogin() {
   const [email, setEmail] = useState("");
@@ -26,10 +26,10 @@ function SecLogin() {
       toast.error("All fields must be filled");
       return;
     }
-    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
-      toast.error("Invalid email address");
-      return;
-    }
+    // if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+    //   toast.error("Invalid email address");
+    //   return;
+    // }
 
     setLoader(true);
 
@@ -108,8 +108,8 @@ function SecLogin() {
               <form onSubmit={submitHandler}>
                 <div className="mt-5">
                   <input
-                    type="text"
-                    placeholder="Email"
+                    type=""
+                    placeholder="Email or Mobile"
                     className="border border-gray-400 py-1 px-2 w-full"
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -136,7 +136,7 @@ function SecLogin() {
                   </div>
                 </div>
 
-                <div className="mt-5">
+                {/* <div className="mt-5">
                   <input type="checkbox" className="border border-gray-400" />
                   <span>
                     I accept the{" "}
@@ -148,6 +148,11 @@ function SecLogin() {
                       Privacy Policy
                     </a>
                   </span>
+                </div> */}
+                <div className="text-sm mt-3 cursor-pointer underline text-blue-500 ">
+                  <Link to={'/sUsers/forgotPassword'}>
+                 Forgot password
+                 </Link>
                 </div>
                 <div className="mt-5">
                   <button
@@ -165,6 +170,16 @@ function SecLogin() {
                       "Login"
                     )}
                   </button>
+
+                  <p className="text-center font-semibold mt-6 ">
+                  Login as
+                  <Link to={"/pUsers/login"}>
+                    {" "}
+                    <span className="text-blue-500 ml-1 cursor-pointer">
+                      Owner
+                    </span>
+                  </Link>
+                  </p>
                 </div>
               </form>
             </div>

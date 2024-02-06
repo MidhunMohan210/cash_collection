@@ -6,12 +6,61 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { BsFillBuildingsFill } from "react-icons/bs";
+import { FaEye } from "react-icons/fa6";
+import { SlUserFollow } from "react-icons/sl";
+import { IoIosCreate } from "react-icons/io";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { IoReceipt } from "react-icons/io5";
+import { PiBankFill } from "react-icons/pi";
+import { useDispatch } from "react-redux";
+import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
+
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
   const [showSidebar, setShowSidebar] = useState(false);
   const [userData, setUserData] = useState({});
   const [tab, setTab] = useState("addOrganizations");
   const navigate = useNavigate();
+  const dispatch=useDispatch();
+
+  const [expandedSections, setExpandedSections] = useState({
+    orgList: false,
+    addOrg: false,
+    addSec: false,
+    agentLIst: false,
+    addBank: false,
+    bankList: false,
+  });
+
+  console.log(expandedSections);
+
+  console.log(TAB);
+
+  useEffect(() => {
+    if (TAB == "addOrg") {
+      expandedSections.addOrg = true;
+    }
+    if (TAB == "orgList") {
+      expandedSections.addOrg = true;
+    }
+    if (TAB == "addSec") {
+      expandedSections.addSec = true;
+    }
+    if (TAB == "agentLIst") {
+      expandedSections.addSec = true;
+    }
+    if (TAB == "bankList") {
+      expandedSections.addBank = true;
+    }
+  }, [TAB]);
+
+  const handleToggleSection = (section) => {
+    setExpandedSections((prevSections) => ({
+      ...prevSections,
+      [section]: !prevSections[section],
+    }));
+  };
 
   useEffect(() => {
     const getUserData = async () => {
@@ -33,16 +82,13 @@ function Sidebar({ TAB, showBar }) {
     }
   }, [showBar]);
 
-  useEffect(()=>{
-
+  useEffect(() => {
     if (window.innerWidth < 768) {
       setShowSidebar(false);
     }
+  }, []);
 
-  },[])
-
-  const handleSidebarItemClick = (newTab) => {
-    console.log("haiii");
+  const handleSidebarItemClick = () => {
     if (window.innerWidth < 768) {
       setShowSidebar(!showSidebar);
     }
@@ -59,12 +105,16 @@ function Sidebar({ TAB, showBar }) {
       );
       toast.success(res.data.message);
       localStorage.removeItem("pUserData");
+      dispatch(removeSelectedOrganization())
       navigate("/pUsers/login");
     } catch (error) {
       console.error(error);
       toast.error(error.response.data.message);
     }
   };
+
+  console.log(TAB);
+  console.log(expandedSections.addOrg);
 
   return (
     <div className="sb">
@@ -83,19 +133,6 @@ function Sidebar({ TAB, showBar }) {
         overflow-y-auto`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {/* <IoReorderThree
-          onClick={handleToggleSidebar}
-          className="text-4xl ml-0 mt-[-20px] text-white block md:hidden"
-        /> */}
-
-        {/* <a href="#" className="mx-auto">
-          <img
-            className="w-auto h-6 sm:h-7"
-            src="https://merakiui.com/images/full-logo.svg"
-            alt=""
-          />
-        </a> */}
-
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
             className="object-cover w-24 h-24 mx-2 rounded-full"
@@ -124,144 +161,215 @@ function Sidebar({ TAB, showBar }) {
         <div className="">
           <div className="flex flex-col justify-between flex-1 mt-6  ">
             <nav>
-              <Link to={"/pUsers/addOrganization"}>
-                <a
-                  onClick={() => {
-                    handleSidebarItemClick("addOrganizations");
-                  }}
-                  className={` ${
-                    TAB === "addOrg"
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-400"
-                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                  href="#"
+              <a
+                onClick={() => {
+                  // handleSidebarItemClick("addOrganizations");
+                  handleToggleSection("addOrg");
+                }}
+                className={` ${
+                  TAB === "addOrg" || TAB === "orgList"
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-400"
+                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                href="#"
+              >
+                <BsFillBuildingsFill />
+                <span className="mx-4 font-medium">Company</span>
+              </a>
+              {expandedSections.addOrg && (
+                <div
+                  className="pl-8 mt-2 text-white flex flex-col gap-1 pt-2 animate__animated animate__fadeIn"
+                  style={{ animationDuration: "5s" }}
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  {/* Add your sections here, for example: */}
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListLive");
+                    }}
+                    className={` ${
+                      TAB === "addOrg" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
                   >
-                    <path
-                      d="M19 11H5M19 11C20.1046 11 21 11.8954 21 13V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V13C3 11.8954 3.89543 11 5 11M19 11V9C19 7.89543 18.1046 7 17 7M5 11V9C5 7.89543 5.89543 7 7 7M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7M7 7H17"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                    <div className="flex items-center gap-2 ">
+                      <IoIosCreate />
+                      <Link to={"/pUsers/addOrganization"}>
+                        <span className={`mr-2 p-2 `}>Create</span>
+                      </Link>
+                    </div>
+                    <div className="custom-checkbox"></div>
+                  </label>
 
-                  <span className="mx-4 font-medium">Add organizations</span>
-                </a>
-              </Link>
-              <Link to={"/pUsers/organizationList"}>
-                <a
-                  onClick={() => {
-                    handleSidebarItemClick("organizationList");
-                  }}
-                  className={` ${
-                    TAB === "orgList"
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-400"
-                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                  href="#"
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListBlocked");
+                    }}
+                    className={` ${
+                      TAB === "orgList" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
+                  >
+                    <div className="flex items-center  gap-2">
+                      <FaEye className="" />
+                      <Link to={"/pUsers/organizationList"}>
+                        <span className="mr-2 p-2">Display</span>
+                      </Link>
+                    </div>
+                    <div className="custom-checkbox"></div>
+                    {/* Add your logic for blocked section */}
+                  </label>
+                </div>
+              )}
+
+              {/* <a
+                onClick={() => {
+                  handleSidebarItemClick("organizationList");
+                }}
+                className={` ${
+                  TAB === "orgList" ? "bg-gray-800 text-white" : "text-gray-400"
+                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                href="#"
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <path
+                    d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
 
-                  <span className="mx-4 font-medium">Your organizations</span>
-                </a>
-              </Link>
+                <span className="mx-4 font-medium">Your organizations</span>
+              </a> */}
 
-              <Link to={"/pUsers/addSecUsers"}>
-                <a
-                  onClick={() => {
-                    handleSidebarItemClick("addAgents");
-                  }}
-                  className={` ${
-                    TAB === "addSec"
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-400"
-                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                  href="#"
+              {/* <Link to={"/pUsers/addSecUsers"}> */}
+              <a
+                onClick={() => {
+                  // handleSidebarItemClick("addAgents");
+                  handleToggleSection("addSec");
+                }}
+                className={` ${
+                  TAB === "addSec" ? "bg-gray-800 text-white" : "text-gray-400"
+                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                href="#"
+              >
+                <SlUserFollow />
+
+                <span className="mx-4 font-medium">Retailers</span>
+              </a>
+              {expandedSections.addSec && (
+                <div
+                  className="pl-8 mt-2 text-white flex flex-col gap-2 pt-2 animate__animated animate__fadeIn"
+                  style={{ animationDuration: "5s" }}
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  {/* Add your sections here, for example: */}
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListLive");
+                    }}
+                    className={` ${
+                      TAB === "addSec" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
                   >
-                    <path
-                      d="M15 5V7M15 11V13M15 17V19M5 5C3.89543 5 3 5.89543 3 7V10C4.10457 10 5 10.8954 5 12C5 13.1046 4.10457 14 3 14V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V14C19.8954 14 19 13.1046 19 12C19 10.8954 19.8954 10 21 10V7C21 5.89543 20.1046 5 19 5H5Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                    <div className="flex items-center gap-2">
+                      <IoIosCreate />
+                      <Link to={"/pUsers/addSecUsers"}>
+                        <span className="mr-2 p-2">Create</span>
+                      </Link>
+                    </div>
+                    <div className="custom-checkbox"></div>
+                    {/* Add your logic for live section */}
+                  </label>
 
-                  <span className="mx-4 font-medium">
-                    Add Collection Agents
-                  </span>
-                </a>
-              </Link>
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListBlocked");
+                    }}
+                    className={` ${
+                      TAB === "agentLIst" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
+                  >
+                    <div className="flex items-center  gap-2">
+                      <FaEye />
+                      <Link to={"/pUsers/secUsersList"}>
+                        <span className="mr-2 p-2">Display</span>
+                      </Link>
+                    </div>
+                    <div className="custom-checkbox"></div>
+                    {/* Add your logic for blocked section */}
+                  </label>
+                </div>
+              )}
 
-              <Link to={"/pUsers/secUsersList"}>
-                <a
-                  onClick={() => {
-                    handleSidebarItemClick("agentLIst");
-                  }}
-                  className={` ${
-                    TAB === "agentLIst"
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-400"
-                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                  href="#"
+              <a
+                onClick={() => {
+                  // handleSidebarItemClick("addOrganizations");
+                  handleToggleSection("addBank");
+                }}
+                className={` ${
+                  TAB === "addBank" || TAB === "bankList"
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-400"
+                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                href="#"
+              >
+                <PiBankFill />
+                <span className="mx-4 font-medium">Banks</span>
+              </a>
+              {expandedSections.addBank && (
+                <div
+                  className="pl-8 mt-2 text-white flex flex-col gap-1 pt-2 animate__animated animate__fadeIn"
+                  style={{ animationDuration: "5s" }}
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  {/* Add your sections here, for example: */}
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListLive");
+                    }}
+                    className={` ${
+                      TAB === "addBank" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
                   >
-                    <path
-                      d="M10.3246 4.31731C10.751 2.5609 13.249 2.5609 13.6754 4.31731C13.9508 5.45193 15.2507 5.99038 16.2478 5.38285C17.7913 4.44239 19.5576 6.2087 18.6172 7.75218C18.0096 8.74925 18.5481 10.0492 19.6827 10.3246C21.4391 10.751 21.4391 13.249 19.6827 13.6754C18.5481 13.9508 18.0096 15.2507 18.6172 16.2478C19.5576 17.7913 17.7913 19.5576 16.2478 18.6172C15.2507 18.0096 13.9508 18.5481 13.6754 19.6827C13.249 21.4391 10.751 21.4391 10.3246 19.6827C10.0492 18.5481 8.74926 18.0096 7.75219 18.6172C6.2087 19.5576 4.44239 17.7913 5.38285 16.2478C5.99038 15.2507 5.45193 13.9508 4.31731 13.6754C2.5609 13.249 2.5609 10.751 4.31731 10.3246C5.45193 10.0492 5.99037 8.74926 5.38285 7.75218C4.44239 6.2087 6.2087 4.44239 7.75219 5.38285C8.74926 5.99037 10.0492 5.45193 10.3246 4.31731Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                    <div className="flex items-center gap-2 ">
+                      <IoIosCreate />
+                      {/* <Link to={"/pUsers/addOrganization"}> */}
+                      <span className={`mr-2  `}>Create</span>
+                      {/* </Link> */}
+                    </div>
+                    <div className="custom-checkbox"></div>
+                  </label>
 
-                  <span className="mx-4 font-medium">Collection Agents</span>
-                </a>
-              </Link>
+                  <label
+                    onClick={() => {
+                      handleSidebarItemClick("organizationListBlocked");
+                    }}
+                    className={` ${
+                      TAB === "bankList" ? " bg-gray-800 text-white " : ""
+                    } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer p-2`}
+                  >
+                    <div className="flex items-center  gap-2">
+                      <FaEye className="" />
+                      <Link to={"/pUsers/bankList"}>
+                        <span className="mr-2 p-2">Display</span>
+                      </Link>
+                    </div>
+                    <div className="custom-checkbox"></div>
+                    {/* Add your logic for blocked section */}
+                  </label>
+                </div>
+              )}
+
               <Link to={"/pUsers/outstanding"}>
                 <a
                   onClick={() => {
@@ -274,29 +382,9 @@ function Sidebar({ TAB, showBar }) {
                   } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
                   href="#"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3246 4.31731C10.751 2.5609 13.249 2.5609 13.6754 4.31731C13.9508 5.45193 15.2507 5.99038 16.2478 5.38285C17.7913 4.44239 19.5576 6.2087 18.6172 7.75218C18.0096 8.74925 18.5481 10.0492 19.6827 10.3246C21.4391 10.751 21.4391 13.249 19.6827 13.6754C18.5481 13.9508 18.0096 15.2507 18.6172 16.2478C19.5576 17.7913 17.7913 19.5576 16.2478 18.6172C15.2507 18.0096 13.9508 18.5481 13.6754 19.6827C13.249 21.4391 10.751 21.4391 10.3246 19.6827C10.0492 18.5481 8.74926 18.0096 7.75219 18.6172C6.2087 19.5576 4.44239 17.7913 5.38285 16.2478C5.99038 15.2507 5.45193 13.9508 4.31731 13.6754C2.5609 13.249 2.5609 10.751 4.31731 10.3246C5.45193 10.0492 5.99037 8.74926 5.38285 7.75218C4.44239 6.2087 6.2087 4.44239 7.75219 5.38285C8.74926 5.99037 10.0492 5.45193 10.3246 4.31731Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <GiTakeMyMoney />
 
-                  <span className="mx-4 font-medium">Out standing</span>
+                  <span className="mx-4 font-medium">Outstandings</span>
                 </a>
               </Link>
               <Link to={"/pUsers/transaction"}>
@@ -311,29 +399,9 @@ function Sidebar({ TAB, showBar }) {
                   } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
                   href="#"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3246 4.31731C10.751 2.5609 13.249 2.5609 13.6754 4.31731C13.9508 5.45193 15.2507 5.99038 16.2478 5.38285C17.7913 4.44239 19.5576 6.2087 18.6172 7.75218C18.0096 8.74925 18.5481 10.0492 19.6827 10.3246C21.4391 10.751 21.4391 13.249 19.6827 13.6754C18.5481 13.9508 18.0096 15.2507 18.6172 16.2478C19.5576 17.7913 17.7913 19.5576 16.2478 18.6172C15.2507 18.0096 13.9508 18.5481 13.6754 19.6827C13.249 21.4391 10.751 21.4391 10.3246 19.6827C10.0492 18.5481 8.74926 18.0096 7.75219 18.6172C6.2087 19.5576 4.44239 17.7913 5.38285 16.2478C5.99038 15.2507 5.45193 13.9508 4.31731 13.6754C2.5609 13.249 2.5609 10.751 4.31731 10.3246C5.45193 10.0492 5.99037 8.74926 5.38285 7.75218C4.44239 6.2087 6.2087 4.44239 7.75219 5.38285C8.74926 5.99037 10.0492 5.45193 10.3246 4.31731Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <IoReceipt />
 
-                  <span className="mx-4 font-medium">Transactions</span>
+                  <span className="mx-4 font-medium">Receipts</span>
                 </a>
               </Link>
             </nav>

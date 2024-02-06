@@ -5,6 +5,8 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import PrimaryUsers from "./PrimaryUsers";
 import Organizations from "./Organizations";
 import SecUsersListAdmin from "./SecUsersListAdmin";
+import SecUsersListAdminBlocked from "./SecUsersListAdminBlocked";
+import OrganisationsBlocked from "./OrganizationsBlocked";
 const AdminHome = () => {
   const [tab, setTab] = useState("pUsers");
 
@@ -21,10 +23,14 @@ const AdminHome = () => {
       </div>
 
       <div className="flex-1 overflow-x-auto">
-        {tab === "pUsers" && <PrimaryUsers className="overflow-y-auto" />}
-        {tab === "secUsers" && <SecUsersListAdmin className="overflow-y-auto" />}
-        {tab === "organizationList" && (
+        {tab === "pUsers" && <PrimaryUsers    />}
+        {tab === "secUsersLive" && <SecUsersListAdmin  />}
+        {tab === "secUsersBlocked" && <SecUsersListAdminBlocked className="overflow-y-auto" />}
+        {tab === "organizationListLive" && (
           <Organizations className="overflow-y-auto" />
+        )}
+        {tab === "organizationListBlocked" && (
+          <OrganisationsBlocked className="overflow-y-auto" />
         )}
       </div>
     </div>

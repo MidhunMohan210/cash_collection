@@ -1,19 +1,25 @@
 import express from 'express'
 const router = express.Router();
 import {login,getSecUserData,fetchOutstandingTotal,
-    fetchOutstandingDetails,confirmCollection,logout,transactions,cancelTransaction,fetchBanks} from "../controllers/secondaryUserController.js"
+    fetchOutstandingDetails,confirmCollection,logout,
+    transactions,cancelTransaction,fetchBanks,sendOtp,submitOtp,resetPassword} from "../controllers/secondaryUserController.js"
 import { authSecondary } from '../middlewares/authSecUsers.js';
+import { secondaryIsBlocked } from '../middlewares/isBlocked.js';
 
 
 router.post('/login',login)
-router.post('/logout',authSecondary,logout)
-router.get('/getSecUserData',authSecondary,getSecUserData)
-router.get('/fetchOutstandingTotal/:cmp_id',authSecondary,fetchOutstandingTotal)
-router.get('/fetchOutstandingDetails/:party_id/:cmp_id',authSecondary,fetchOutstandingDetails)
-router.post('/confirmCollection',authSecondary,confirmCollection)
-router.get('/transactions',authSecondary,transactions)
-router.post('/cancelTransaction/:id',authSecondary,cancelTransaction)
-router.get('/fetchBanks/:cmp_id',authSecondary,fetchBanks)
+router.post('/sendOtp',sendOtp)
+router.post('/submitOtp',submitOtp)
+router.post('/resetPassword',resetPassword)
+
+router.post('/logout',authSecondary,secondaryIsBlocked,logout)
+router.get('/getSecUserData',authSecondary,secondaryIsBlocked,getSecUserData)
+router.get('/fetchOutstandingTotal/:cmp_id',authSecondary,secondaryIsBlocked,fetchOutstandingTotal)
+router.get('/fetchOutstandingDetails/:party_id/:cmp_id',authSecondary,secondaryIsBlocked,fetchOutstandingDetails)
+router.post('/confirmCollection',authSecondary,secondaryIsBlocked,confirmCollection)
+router.get('/transactions',authSecondary,secondaryIsBlocked,transactions)
+router.post('/cancelTransaction/:id',authSecondary,secondaryIsBlocked,cancelTransaction)
+router.get('/fetchBanks/:cmp_id',authSecondary,secondaryIsBlocked,fetchBanks)
 
 
 

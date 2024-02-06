@@ -21,6 +21,14 @@ import OrganizationList from '../../src/pages/primaryUsers/OrganisationList'
 import AddSecUsers from '../pages/primaryUsers/AddSecUsers'
 import SecUsersList from '../pages/primaryUsers/SecUsersList'
 import ProtectedPriRoute from './ProtectedPriRoute'
+import ProtectedAdmin from './ProtectedAdmin'
+import BankList from '../pages/primaryUsers/BankList'
+import ForgotPasswordPrimary from '../pages/primaryUsers/ForgotPasswordPrimary'
+import Otp from '../pages/primaryUsers/Otp'
+import ResetPassword from '../pages/primaryUsers/ResetPassword'
+import ForgotPasswordSec from '../pages/secUsers/ForgotPasswordSec'
+import OtpSec from '../pages/secUsers/OtpSec'
+import ResetPasswordSec from '../pages/secUsers/ResetPasswordSec'
 
 
 const Routers = () => {
@@ -29,7 +37,10 @@ const Routers = () => {
         <Route path='/' element={<Login/>}></Route>
         <Route path='/pUsers/register' element={<Register/>}></Route>
         <Route path='/pUsers/login' element={<Login></Login>}></Route>
-        <Route path='/pUsers/home' element={<Home></Home>}></Route>
+        <Route path='/pUsers/forgotPassword' element={<ForgotPasswordPrimary/>}></Route>
+        <Route path='/pUsers/otp' element={<Otp/>}></Route>
+        <Route path='/pUsers/resetPassword' element={<ResetPassword/>}></Route>
+        {/* <Route path='/pUsers/home' element={<Home></Home>}></Route> */}
         <Route path='/pUsers/addOrganization' element={<ProtectedPriRoute><AddOrganisation/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/organizationList' element={<ProtectedPriRoute><OrganizationList/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/addSecUsers' element={<ProtectedPriRoute><AddSecUsers/></ProtectedPriRoute>}></Route>
@@ -38,16 +49,22 @@ const Routers = () => {
         <Route path='/pUsers/outstanding' element={<ProtectedPriRoute>< PrimaryOutstanding/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/outstandingDetails/:party_id/:cmp_id/:total' element={<ProtectedPriRoute>< PrOutstandingDetails/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/transaction' element={<ProtectedPriRoute><PriTransaction /></ProtectedPriRoute>}></Route>
+        <Route path='/pUsers/bankLIst' element={<ProtectedPriRoute><BankList/></ProtectedPriRoute>}></Route>
 
 
 
         {/* admin */}
         <Route path='/admin/login' element={<AdminLogin/>}></Route>
-        <Route path='/admin/home' element={<AdminHome/>}></Route>
+        <Route path='/admin/home' element={<ProtectedAdmin><AdminHome/></ProtectedAdmin>}></Route>
 
 
         {/* sec users */}
         <Route path='/sUsers/login' element={<SecLogin/>}></Route>
+        <Route path='/sUsers/forgotPassword' element={<ForgotPasswordSec/>}></Route>
+        <Route path='/sUsers/otp' element={<OtpSec/>}></Route>
+        <Route path='/sUsers/resetPassword' element={<ResetPasswordSec/>}></Route>
+
+
         <Route path='/sUsers/home' element={<ProtectedSecRoute><SecHome/></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/outstanding' element={<ProtectedSecRoute><Outstanding/></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/outstandingDetails/:party_id/:cmp_id/:total' element={<ProtectedSecRoute><OutstandingDetails/></ProtectedSecRoute>}></Route>

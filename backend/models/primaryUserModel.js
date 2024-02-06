@@ -4,14 +4,15 @@ import bcrypt from 'bcryptjs'
 const primaryUserSchema = new mongoose.Schema(
   {
     userName: { type: String, required: true },
-    email: { type: String },
-    mobile: { type: Number },
+    email: { type: String ,unique:true},
+    mobile: { type: Number,unique:true },
     password: { type: String },
-    subscription: { type: String,default:"monthly"},
+    subscription: { type: String},
     sms: { type: Boolean, default: false },
     whatsApp: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: true },
+    otp:{type:Number}
   },
   {
     timestamps: true,
@@ -19,6 +20,7 @@ const primaryUserSchema = new mongoose.Schema(
 );
 
 primaryUserSchema.pre("save", async function (next) {
+  console.log("pre save middleware triggered");
   if (!this.isModified("password")) {
     next();
   }
