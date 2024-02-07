@@ -16,9 +16,11 @@ dotenv.config();
 const port = process.env.PORT;
 connectDB();
 const corsOptions = {
-    origin: true,
-    credentials: true,
-  };
+  // origin: ['http://localhost:5173', 'https://erp.camet.in'],
+  // origin:'https://erp.camet.in',
+  origin:true,
+  credentials: true,
+};
   
 
 const app = express();

@@ -4,7 +4,7 @@ import BankDetailsModel from "../models/bankModel.js";
 
 export const saveDataFromTally = async (req, res) => {
   try {
-    console.log("body",req.body);
+    console.log("body", req.body);
     const dataToSave = await req.body.data;
     console.log("dataToSave", dataToSave);
     // let docCount = await TallyData.find({}).countDocuments();
@@ -17,6 +17,7 @@ export const saveDataFromTally = async (req, res) => {
           cmp_id: dataItem.cmp_id,
           bill_no: dataItem.bill_no,
           Primary_user_id: dataItem.Primary_user_id,
+          party_id: dataItem.party_id,
         });
 
         // Use findOneAndUpdate to find an existing document based on some unique identifier
@@ -25,6 +26,7 @@ export const saveDataFromTally = async (req, res) => {
             cmp_id: dataItem.cmp_id,
             bill_no: dataItem.bill_no,
             Primary_user_id: dataItem.Primary_user_id,
+            party_id: dataItem.party_id,
           },
           dataItem,
           { upsert: true, new: true }
@@ -48,7 +50,7 @@ export const giveTransaction = async (req, res) => {
   const cmp_id = req.params.cmp_id;
   const SNo = req.params.SNo;
 
-  console.log("SNo",SNo);
+  console.log("SNo", SNo);
   try {
     const transactions = await TransactionModel.find({
       cmp_id: cmp_id,
@@ -57,7 +59,7 @@ export const giveTransaction = async (req, res) => {
     if (transactions.length > 0) {
       return res.status(200).json({
         message: "Transactions fetched",
-        data: transactions 
+        data: transactions,
       });
     } else {
       return res.status(404).json({ message: "Transactions not found" });
@@ -71,11 +73,8 @@ export const giveTransaction = async (req, res) => {
   }
 };
 
-
 // @desc for giving transactions to tally
 // route GET/api/tally/giveTransaction
-
-
 
 export const addBankData = async (req, res) => {
   try {
@@ -150,14 +149,13 @@ export const addBankData = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: 'Bank data added/updated successfully',
+      message: "Bank data added/updated successfully",
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       status: false,
-      message: 'Internal server error',
+      message: "Internal server error",
     });
   }
 };
-
