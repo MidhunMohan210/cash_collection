@@ -44,14 +44,17 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const { name, _id } = secUser._doc;
+    const { name, _id,mobile } = secUser._doc;
+    console.log("mobile",mobile);
     const token = generateSecToken(res, secUser._id);
 
     return res.status(200).json({
       message: "Login successful",
       token,
-      data: { email, name, _id },
+      data: { email, name, _id,mobile },
     });
+
+    
   } catch (error) {
     console.log(error);
     return res.status(500).json({ status: false, message: "Failed to login!" });
@@ -101,9 +104,13 @@ export const fetchOutstandingTotal = async (req, res) => {
           totalBillAmount: { $sum: "$bill_pending_amt" },
           party_name: { $first: "$party_name" },
           cmp_id: { $first: "$cmp_id" },
+          user_id:{ $first: "$user_id"}
         },
       },
     ]);
+
+    outstandingData.sort((a, b) => a.party_name.localeCompare(b.party_name));
+
 
     if (outstandingData) {
       return res.status(200).json({
@@ -220,16 +227,13 @@ export const confirmCollection = async (req, res) => {
         agentId,
       });
 
-      await transaction.save();
+      const savedTransaction=await transaction.save();
 
-      console.log("Documents updated successfully");
+      res.status(200).json({ message: "Your Collection is confirmed",id:savedTransaction._id });
     } else {
       console.log("No matching documents found for the given criteria");
     }
 
-    // // Add your logic to handle PaymentMethod, paymentDetails, agentName, agentId
-
-    res.status(200).json({ message: "Your Collection is confirmed" });
   } catch (error) {
     console.error("Error updating documents:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -491,6 +495,28 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+// @desc to get the details of transaction or receipt
+// route GET/api/sUsers/getTransactionDetails
+
+export const getTransactionDetails = async (req, res) => {
+  const receiptId = req.params.id;
+  
+  try {
+    const receiptDetails = await TransactionModel.findById(receiptId);
+    
+    if (receiptDetails) {
+      res.status(200).json({message:"reception details fetched",data:receiptDetails });
+    } else {
+      res.status(404).json({ error: "Receipt not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching receipt details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 
 
 

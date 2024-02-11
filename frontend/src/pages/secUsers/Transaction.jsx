@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { ImCancelCircle } from "react-icons/im";
 import { IoReorderThreeSharp } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 
 function Transaction() {
@@ -53,22 +54,22 @@ function Transaction() {
 
   const finalData = filterOutstanding(data);
 
-  const handleCancel = async (id) => {
-    try {
-      const res = await api.post(`/api/sUsers/cancelTransaction/${id}`, {}, {
-        withCredentials: true,
-      });
+  // const handleCancel = async (id) => {
+  //   try {
+  //     const res = await api.post(`/api/sUsers/cancelTransaction/${id}`, {}, {
+  //       withCredentials: true,
+  //     });
 
-      console.log(res.data);
+  //     console.log(res.data);
 
-      toast.success(res.data.message);
-      setRefresh(!refresh);
-      // dispatch(addData(res.data.outstandingData));
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
-  };
+  //     toast.success(res.data.message);
+  //     setRefresh(!refresh);
+  //     // dispatch(addData(res.data.outstandingData));
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 768) {
@@ -90,9 +91,9 @@ function Transaction() {
             <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex items-center gap-2  ">
             <IoReorderThreeSharp
               onClick={handleToggleSidebar}
-              className="block md:hidden text-white"
+              className="block md:hidden text-white text-3xl"
             />
-              <p className="text-white text-md   font-bold ">Transactions</p>
+              <p className="text-white text-lg   font-bold ">Transactions</p>
             </div>
             <div className=" mt-0 shadow-lg p-2 md:p-0">
               <form>
@@ -152,8 +153,9 @@ function Transaction() {
 
           <div className="grid grid-cols-1 gap-4 mt-6 text-center pb-7  ">
             {finalData.map((el, index) => (
+              <Link  key={index} to={`/sUsers/receiptDetails/${el._id}`}>
               <div
-                key={index}
+               
                 className={` ${
                   el?.isCancelled ? "bg-gray-200 pointer-events-none" : ""
                 } bg-[#f8ffff] rounded-md shadow-xl border border-gray-100  flex flex-col justify-between px-4  transition-all duration-150 transform hover:scale-105 ease-in-out`}
@@ -183,7 +185,7 @@ function Transaction() {
                 <hr />
                 <hr />
                 <div className="flex justify-between p-4">
-                  <button
+                  {/* <button
                     onClick={() => {
                       handleCancel(el._id);
                     }}
@@ -191,7 +193,7 @@ function Transaction() {
                   >
                     <ImCancelCircle />
                     {el.isCancelled ? "Cancelled" : "Cancel"}
-                  </button>
+                  </button> */}
 
                   <div className=" flex items-center gap-2 text-md text-violet-500">
                     <IoArrowRedoOutline />
@@ -199,6 +201,7 @@ function Transaction() {
                   </div>
                 </div>
               </div>
+              </Link>
             ))}
           </div>
         </div>

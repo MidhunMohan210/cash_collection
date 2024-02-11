@@ -89,10 +89,10 @@ function SecUsersList() {
 
       <body className="flex-1 antialiased font-sans  h-screen overflow-y-scroll">
 
-      <div className="block md:hidden bg-[#201450] text-white mb-1 p-3  text-lg flex items-center gap-3">
+      <div className="block md:hidden bg-[#201450] text-white mb-1 p-3  text-lg flex items-center gap-3 text-lg">
       <IoReorderThreeSharp
               onClick={handleToggleSidebar}
-              className="block md:hidden"
+              className="block md:hidden text-3xl"
             />
           <p> Retailers </p>
         </div>

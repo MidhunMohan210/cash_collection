@@ -12,7 +12,8 @@ const TransactionModelSchema = new mongoose.Schema({
   paymentDetails: { type: Object, required: true },
   agentName: { type: String, required: true },
   agentId: { type: String, required: true },
-  isCancelled:{type:Boolean,default:false}
+  isCancelled:{type:Boolean,default:false},
+  mobile_no:{type:String}
 },
 {
   timestamps: true,

@@ -36,7 +36,7 @@ function AdminSidebar({ onTabChange }) {
 
   const handleToggleSection = (section) => {
     setExpandedSections((prevSections) => ({
-      ...prevSections,
+      // ...prevSections,
       [section]: !prevSections[section],
     }));
   };
@@ -99,10 +99,11 @@ function AdminSidebar({ onTabChange }) {
       <aside
         className={`${
           showSidebar ? "z-10 block absolute h-[125vh] " : " hidden md:block"
-        } flex flex-col w-64 h-screen overflow-y-auto  px-4 py-8 bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700`}
+        } flex flex-col w-64 h-screen overflow-y-auto  px-4 py-8 bg-white border-r rtl:border-r-0 rtl:border-l`}
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "transparent transparent",
+          boxShadow:  "5px 0 15px rgba(0, 0, 0, 0.1)"  
         }}
       >
         <IoReorderThree
@@ -120,10 +121,10 @@ function AdminSidebar({ onTabChange }) {
             src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
             alt="avatar"
           />
-          <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">
+          <h4 className="mx-2 mt-2 font-medium text-black ">
             Camet
           </h4>
-          <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+          <p className="mx-2 mt-1 text-sm font-medium text-black ">
             {admin.email}
           </p>
           <div>
@@ -147,12 +148,12 @@ function AdminSidebar({ onTabChange }) {
                 handleToggleSection("pUsers");
               }}
               className={` ${
-                tab === "pUsers" ? "bg-gray-800 text-white" : "text-gray-400"
-              } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                tab === "pUsers" ? "bg-gray-800 text-white" : "text-black"
+              } hover:bg-gray-800 hover:text-white text-black flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
               href="#"
             >
               <RiUserFollowFill className="text-lg"/>
-              <span className="mx-4 font-medium">Subscriber List</span>
+              <span className="mx-4 font-medium ">Subscriber List</span>
             </a>
             <a
               onClick={() => {
@@ -162,7 +163,7 @@ function AdminSidebar({ onTabChange }) {
                 tab === "organizationListLive" ||
                 tab === "organizationListBlocked"
                   ? "bg-gray-800 text-white"
-                  : "text-gray-400"
+                  : "text-black"
               } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
               href="#"
             >
@@ -184,7 +185,7 @@ function AdminSidebar({ onTabChange }) {
                     tab === "organizationListLive"
                       ? " bg-gray-800 text-white "
                       : ""
-                  } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer`}
+                  } rounded-lg flex items-center mb-3 text-black hover:bg-gray-800 hover:text-white  cursor-pointer`}
                 >
                   <div className="flex items-center gap-3">
 
@@ -203,7 +204,7 @@ function AdminSidebar({ onTabChange }) {
                     tab === "organizationListBlocked"
                       ? " bg-gray-800 text-white "
                       : ""
-                  } rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer`}
+                  } rounded-lg flex items-center mb-3 text-black hover:bg-gray-800 hover:text-white  cursor-pointer`}
                 >
                   <div className="flex items-center  gap-2">
                     <CgUnblock className="text-lg"/>
@@ -219,7 +220,7 @@ function AdminSidebar({ onTabChange }) {
                 handleToggleSection("secUsers");
               }}
               className={` ${
-                tab === "secUsers" ? "bg-gray-800 text-white" : "text-gray-400"
+                tab === "secUsers" ? "bg-gray-800 text-white" : "text-black"
               } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
               href="#"
             >
@@ -235,12 +236,12 @@ function AdminSidebar({ onTabChange }) {
                   onClick={() => {
                     handleSidebarItemClick("secUsersLive");
                   }}
-                  className=" rounded-lg flex items-center mb-3 hover:bg-gray-800 hover:text-white  cursor-pointer"
+                  className=" rounded-lg flex items-center mb-3 text-black hover:bg-gray-800 hover:text-white  cursor-pointer"
                 >
                    <div className="flex items-center gap-3">
 
                   <TbLivePhoto/>
-                  <span className="mr-2 p-2">Live</span>
+                  <span className="mr-2 p-2 ">Live</span>
                   </div>
                   <div className="custom-checkbox"></div>
                   {/* Add your logic for live section */}
@@ -250,7 +251,7 @@ function AdminSidebar({ onTabChange }) {
                   onClick={() => {
                     handleSidebarItemClick("secUsersBlocked");
                   }}
-                  className=" rounded-lg flex items-center hover:bg-gray-800 hover:text-white  cursor-pointer"
+                  className=" rounded-lg flex items-center text-black hover:bg-gray-800 hover:text-white  cursor-pointer"
                 >
                    <div className="flex items-center  gap-2">
                     <CgUnblock className="text-lg"/>

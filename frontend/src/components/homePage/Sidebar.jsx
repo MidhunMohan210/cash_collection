@@ -13,16 +13,27 @@ import { IoIosCreate } from "react-icons/io";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { IoReceipt } from "react-icons/io5";
 import { PiBankFill } from "react-icons/pi";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
+import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
+
 
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
   const [showSidebar, setShowSidebar] = useState(false);
   const [userData, setUserData] = useState({});
-  const [tab, setTab] = useState("addOrganizations");
+  const [dropdown, setDropdown] = useState(false);
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState("");
+
+
+
   const navigate = useNavigate();
   const dispatch=useDispatch();
+  const selectedOrgFromRedux = useSelector(
+    (state) => state.setSelectedOrganization.selectedOrg
+  );
+
 
   const [expandedSections, setExpandedSections] = useState({
     orgList: false,
@@ -33,9 +44,9 @@ function Sidebar({ TAB, showBar }) {
     bankList: false,
   });
 
-  console.log(expandedSections);
+  console.log(selectedOrg);
 
-  console.log(TAB);
+
 
   useEffect(() => {
     if (TAB == "addOrg") {
@@ -57,12 +68,37 @@ function Sidebar({ TAB, showBar }) {
 
   const handleToggleSection = (section) => {
     setExpandedSections((prevSections) => ({
-      ...prevSections,
+      // ...prevSections,
       [section]: !prevSections[section],
     }));
   };
 
+
+  const fetchOrganizations = async () => {
+    try {
+      const res = await api.get("/api/pUsers/getOrganizations", {
+        withCredentials: true,
+      });
+
+      setOrganizations(res.data.organizationData);
+
+      if (selectedOrgFromRedux) {
+        console.log("haii");
+        setSelectedOrg(selectedOrgFromRedux);
+      } else {
+        // If no organization is selected, set the first organization as selectedOrg
+        setSelectedOrg(res.data.organizationData[0]);
+        dispatch(setSelectedOrganization(res.data.organizationData[0]));
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
+
+    fetchOrganizations();
     const getUserData = async () => {
       try {
         const res = await api.get("/api/pUsers/getPrimaryUserData", {
@@ -113,8 +149,7 @@ function Sidebar({ TAB, showBar }) {
     }
   };
 
-  console.log(TAB);
-  console.log(expandedSections.addOrg);
+console.log(selectedOrg);
 
   return (
     <div className="sb">
@@ -145,6 +180,72 @@ function Sidebar({ TAB, showBar }) {
           <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">
             {userData.email}
           </p>
+
+          <button
+            onClick={() => {
+              setDropdown(!dropdown);
+            }}
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdown"
+            className="text-white mt-6 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button"
+          >
+            {selectedOrg.name}
+            
+            <svg
+              class="w-2.5 h-2.5 ms-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 4 4 4-4"
+              />
+            </svg>
+          </button>
+
+          {dropdown && (
+            <div
+              className="relative flex justify-center
+              "
+            >
+              <div
+                id="dropdown"
+                className="z-10 absolute mt-2   bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+              >
+                <ul
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropdownDefaultButton"
+                >
+                  {organizations.map((el, index) => (
+                    <li key={index} >
+                      <a
+                        onClick={()=>{setDropdown(!dropdown);
+                          setSelectedOrg(el);
+                          dispatch(setSelectedOrganization(el))}}
+                        // onClick={() => handleDropDownchange(el)}
+                        href="#"
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        {el.name}
+                     
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
+
+
+
+
           <div>
             <button onClick={handleLogout} class="Btn">
               <div class="sign">

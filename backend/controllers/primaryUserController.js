@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 import primaryUserModel from "../models/primaryUserModel.js";
 import generateNumericOTP from "../utils/generateOtp.js";
+import OragnizationModel from "../models/OragnizationModel.js";
 
 // @desc Register Primary user
 // route POST/api/pUsers/register
@@ -105,13 +106,13 @@ export const login = async (req, res) => {
 
     haveOutstanding.length > 0 ? (haveOut = true) : (haveOut = false);
 
-    const { userName, _id } = primaryUser._doc;
+    const { userName, _id,sms } = primaryUser._doc;
     const token = generatePrimaryUserToken(res, primaryUser._id);
 
     return res.status(200).json({
       message: "Login successful",
       token,
-      data: { email, userName, _id, haveOut },
+      data: { email, userName, _id, haveOut,sms},
     });
   } catch (error) {
     console.log(error);
@@ -165,7 +166,11 @@ export const getPrimaryUserData = async (req, res) => {
 // @desc Adding organizations by primary users
 // route POST/api/pUsers/addOrganizations
 export const addOrganizations = async (req, res) => {
-  const { name, place, pin, state, country, email, mobile, gst, logo } =
+  const { name,  pin, state, country, email, mobile, gst, logo ,  flat,
+    road,
+    landmark, senderId,
+    username,
+    password} =
     req.body;
   console.log(req.file);
   console.log(req.body);
@@ -173,7 +178,7 @@ export const addOrganizations = async (req, res) => {
   try {
     const organization = await Organization.create({
       name,
-      place,
+      // place,
       pin,
       state,
       country,
@@ -181,6 +186,12 @@ export const addOrganizations = async (req, res) => {
       email,
       mobile,
       logo,
+      flat,
+      road,
+      landmark,
+      senderId,
+      username,
+      password,
       gstNum: gst,
     });
 
@@ -226,6 +237,67 @@ export const getOrganizations = async (req, res) => {
       .json({ success: false, message: "Internal server error, try again!" });
   }
 };
+
+
+// @desc get organization detail foe edit
+// route GET/api/pUsers/getOrganizations
+
+export const getSingleOrganization = async (req, res) => {
+  const OrgId = new mongoose.Types.ObjectId(req.params.id);
+  console.log("OrgId",OrgId);
+  try {
+    const organization = await Organization.findById(OrgId)
+    if (organization) {
+      return res.status(200).json({
+        organizationData: organization,
+        message: "Organization fetched",
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ message: "No organization found " });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error, try again!" });
+  }
+};
+
+
+
+
+
+// @desc Edit organization
+// @route POST /api/pUsers/editOrg/:id
+
+export const editOrg = async (req, res) => {
+  const orgId = req.params.id;
+  try {
+    const updatedOrg = await Organization.findByIdAndUpdate(orgId, req.body, {
+      new: true, // Return the modified document rather than the original
+      runValidators: true, // Run validators to ensure the updated data meets schema requirements
+    });
+
+    if (!updatedOrg) {
+      return res.status(404).json({ success: false, message: 'Organization not found' });
+    }
+
+    return res.status(200).json({ success: true, data: updatedOrg ,message: 'Company updated successfully'});
+  } catch (error) {
+    console.error('Error updating organization:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+
+
+
+
+
+
+
 
 // @desc adding secondary users
 // route GET/api/pUsers/addSecUsers
@@ -319,6 +391,9 @@ export const fetchOutstandingTotal = async (req, res) => {
       },
     ]);
 
+    outstandingData.sort((a, b) => a.party_name.localeCompare(b.party_name));
+
+
     if (outstandingData) {
       return res.status(200).json({
         outstandingData: outstandingData,
@@ -385,10 +460,6 @@ export const confirmCollection = async (req, res) => {
   } = req.body;
   const paymentMethod = PaymentMethod;
 
-  // console.log("PaymentMethod", PaymentMethod);
-  // console.log("paymentDetails", paymentDetails);
-  // console.log("agentName", agentName);
-  // console.log("agentId", agentId);
 
   const {
     party_id,
@@ -397,6 +468,8 @@ export const confirmCollection = async (req, res) => {
     cmp_id,
     billData,
     enteredAmount,
+    mobile_no
+
   } = collectionDetails;
 
   console.log("collectionDetails", collectionDetails);
@@ -435,18 +508,18 @@ export const confirmCollection = async (req, res) => {
         paymentDetails,
         agentName,
         agentId,
+        mobile_no
       });
 
-      await transaction.save();
+      const savedTransaction=await transaction.save();
+      console.log("savedTransaction",savedTransaction);
 
+      res.status(200).json({ message: "Your Collection is confirmed" ,id:savedTransaction._id});
       console.log("Documents updated successfully");
     } else {
       console.log("No matching documents found for the given criteria");
     }
 
-    // // Add your logic to handle PaymentMethod, paymentDetails, agentName, agentId
-
-    res.status(200).json({ message: "Your Collection is confirmed" });
   } catch (error) {
     console.error("Error updating documents:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -735,3 +808,23 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// @desc toget the details of transaction or receipt
+// route POST/api/pUsers/getTransactionDetails
+
+export const getTransactionDetails = async (req, res) => {
+  const receiptId = req.params.id;
+  
+  try {
+    const receiptDetails = await TransactionModel.findById(receiptId);
+    
+    if (receiptDetails) {
+      res.status(200).json({message:"reception details fetched",data:receiptDetails });
+    } else {
+      res.status(404).json({ error: "Receipt not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching receipt details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}

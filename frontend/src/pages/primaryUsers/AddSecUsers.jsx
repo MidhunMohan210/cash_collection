@@ -131,10 +131,10 @@ function AddSecUsers() {
 
       <div className="flex-1 ">
         <section className=" bg-blueGray-50 h-screen overflow-y-scroll">
-        <div className="block  bg-[#201450] text-white mb-2 p-3 flex items-center gap-3 sticky top-0 z-20 ">
+        <div className="block  bg-[#201450] text-white mb-2 p-3 flex items-center gap-3 sticky top-0 z-20 text-lg  ">
         <IoReorderThreeSharp
               onClick={handleToggleSidebar}
-              className="block md:hidden"
+              className="block md:hidden text-3xl"
             />
           <p> Add Retailers </p>
         </div>

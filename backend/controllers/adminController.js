@@ -3,6 +3,8 @@ import PrimaryUsers from "../models/primaryUserModel.js";
 import generateAdminToken from "../utils/generateAdminToken.js";
 import Organization from "../models/OragnizationModel.js";
 import SecondaryUser from "../models/secondaryUserModel.js";
+import TallyData from '../models/TallyData.js'
+import Banks from '../models/bankModel.js'
 import nodemailer from "nodemailer";
 
 // @desc Login Admin
@@ -46,9 +48,6 @@ export const adminLogin = async (req, res) => {
 // @desc Log out  Admin
 // route POST/api/admin/logout
 
-// @desc Logout Primary user
-// route POST/api/pUsers/logout
-
 export const logout = async (req, res) => {
   try {
     res.cookie("jwt_admin", "", {
@@ -64,11 +63,6 @@ export const logout = async (req, res) => {
     return res.status(500).json({ status: false, message: "Failed to login!" });
   }
 };
-
-
-
-
-
 
 
 // @desc get admin data for side bar
@@ -167,7 +161,15 @@ export const handlePrimaryDelete = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const user = await PrimaryUsers.findByIdAndDelete(userId);
+
+
+    const [user,secUser,organizations,banks,tallies]=await Promise.all([
+      PrimaryUsers.findByIdAndDelete(userId),
+      SecondaryUser.deleteMany({ primaryUser: userId }),
+      Organization.deleteMany({ owner: userId }),
+      Banks.deleteMany({ Primary_user_id: userId }),
+      TallyData.deleteMany({ Primary_user_id: userId })
+    ])
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -180,20 +182,6 @@ export const handlePrimaryDelete = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

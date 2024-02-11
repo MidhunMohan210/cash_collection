@@ -6,8 +6,11 @@ export const saveDataFromTally = async (req, res) => {
   try {
     console.log("body", req.body);
     const dataToSave = await req.body.data;
-    console.log("dataToSave", dataToSave);
-    // let docCount = await TallyData.find({}).countDocuments();
+      console.log("dataToSave", dataToSave);
+    const { Primary_user_id, cmp_id } = dataToSave[0];
+
+    await TallyData.deleteMany({ Primary_user_id, cmp_id });
+  
 
     // Use Promise.all to parallelize document creation or update
     const savedData = await Promise.all(

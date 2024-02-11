@@ -20,7 +20,8 @@ function Outstanding() {
 
   const dispatch = useDispatch();
   const currOrg=useSelector((state)=>state.secSelectedOrganization.secSelectedOrg)
-  console.log(currOrg);
+  const secUser=JSON.parse(localStorage.getItem('sUserData'))
+  console.log(secUser);
 
 
   const handleToggleSidebar = () => {
@@ -61,16 +62,20 @@ function Outstanding() {
 
   console.log(data);
 
-  const filterOutstanding = (data) => {
+  const filterOutstanding = (data,secUser) => {
     return data.filter((item) => {
       const searchFilter = item.party_name
         ?.toLowerCase()
         .includes(search.toLowerCase());
-      return searchFilter;
+
+        const userIdFilter = (item.user_id === String(secUser.mobile)) || (item.user_id === 'null');
+
+      return searchFilter && userIdFilter
     });
   };
 
-  const finalData = filterOutstanding(data);
+  const finalData = filterOutstanding(data,secUser);
+  console.log(finalData);
 
   return (
     <div className="flex">
@@ -83,9 +88,9 @@ function Outstanding() {
           <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex  items-center gap-2  ">
           <IoReorderThreeSharp
               onClick={handleToggleSidebar}
-              className="block md:hidden text-white"
+              className="block md:hidden text-white text-3xl"
             />
-            <p className="text-white text-md   font-bold ">Outstandings</p>
+            <p className="text-white text-lg   font-bold ">Outstandings</p>
           </div>
           <div className=" mt-0 shadow-lg p-2 md:p-0">
             <form>
@@ -149,19 +154,19 @@ function Outstanding() {
                 // }}
                 className="  bg-[#f8ffff] rounded-md shadow-xl border border-gray-100  flex flex-col px-4  transition-all duration-150 transform hover:scale-105 ease-in-out "
               >
-                <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center">
                   <div className=" h-full px-2 py-8 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
                     <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left ">
                       {el.party_name}
                     </p>
                     <p className="text-gray-400 text-sm ">Customer</p>
                   </div>
-                  <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-end items-start relative flex-col">
+                  <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex text-right relative flex-col">
                     <div className="flex-col justify-center  ">
                       <p className=" font-semibold text-green-600 ">
                         Total Amount
                       </p>
-                      <div className="flex justify-center">
+                      <div className="flex justify-end text-right ">
                         <p className="text-sm font-bold">
                           ₹{formatAmount(el.totalBillAmount)}
                         </p>

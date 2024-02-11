@@ -4,12 +4,12 @@ import { toast } from "react-toastify";
 import uploadImageToCloudinary from "../../../utils/uploadCloudinary.js";
 import { HashLoader } from "react-spinners";
 import Sidebar from "../../components/homePage/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";
 import { IoReorderThreeSharp } from "react-icons/io5";
+import { useParams,useNavigate } from "react-router-dom";
 
-const AddOrganisation = () => {
+const EditOrg = () => {
   const [name, setName] = useState("");
-  const [place, setPlace] = useState("");
+  // const [place, setPlace] = useState("");
   const [pin, setPin] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("India");
@@ -22,11 +22,55 @@ const AddOrganisation = () => {
   const [logo, setLogo] = useState("");
   const [loader, setLoader] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showInputs, setShowInputs] = useState(false);
-  const [senderId, setSenderId] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState("");
+  const [showInputs, setShowInputs] = useState(false); 
+  const [senderId, setSenderId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+
+const {id}=useParams();
+const navigate=useNavigate()
+
+    useEffect(() => {
+      const fetchSingleOrganization = async () => {
+        try {
+          const res = await api.get(`/api/pUsers/getSingleOrganization/${id}`, {
+            withCredentials: true,
+          });
+
+        
+          const { name, flat, road, landmark, email, mobile, senderId, username, password, pin, gstNum, country, logo, state } = res.data.organizationData
+
+          setName(name);
+          setFlat(flat);
+          setRoad(road);
+          setLandmark(landmark);
+          setEmail(email);
+          setMobile(mobile);
+          setSenderId(senderId);
+          setUsername(username);
+          setPassword(password);
+          setPin(pin);
+          setGst(gstNum);
+          setCountry(country);
+          setLogo(logo);
+          setState(state);
+
+          if(senderId.length>0){
+
+            setShowInputs(true)
+
+          }
+  
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response.data.message);
+        }
+      };
+      fetchSingleOrganization();
+    }, []);
+    
+  
 
   const handleCheckboxChange = () => {
     setShowInputs(!showInputs);
@@ -137,7 +181,7 @@ const AddOrganisation = () => {
       landmark,
       senderId,
       username,
-      password,
+      password
     };
 
     console.log(formData);
@@ -145,7 +189,7 @@ const AddOrganisation = () => {
     // formData.append("logo",logo)
 
     try {
-      const res = await api.post("/api/pUsers/addOrganizations", formData, {
+      const res = await api.post(`/api/pUsers/editOrg/${id}`, formData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -153,21 +197,8 @@ const AddOrganisation = () => {
       });
 
       toast.success(res.data.message);
-      setName("");
-      setPin("");
-      setState("");
-      setEmail("");
-      setMobile("");
-      setGst("");
-      setCountry("");
-      setLogo("");
-      setFlat("");
-      setRoad("");
-      setLandmark("");
-      setSenderId("");
-      setUsername("");
-      setPassword("");
-      
+      navigate('/pUsers/organizationList')
+    
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
@@ -211,24 +242,6 @@ const AddOrganisation = () => {
     "West Bengal",
   ];
 
-  useEffect(()=>{
-    const getUserData = async () => {
-      try {
-        const res = await api.get("/api/pUsers/getPrimaryUserData", {
-          withCredentials: true,
-        });
-        setUserData(res.data.data.userData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUserData();
-  },[])
-
-
-
-
-
   return (
     <div className="flex ">
       <div className="" style={{ height: "100vh" }}>
@@ -242,7 +255,7 @@ const AddOrganisation = () => {
               onClick={handleToggleSidebar}
               className="block md:hidden text-3xl"
             />
-            <p>Add organization</p>
+            <p>Edit organization</p>
           </div>
           <div className="w-full lg:w-8/12 px-4 mx-auto  pb-[30px]  ">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -411,85 +424,87 @@ const AddOrganisation = () => {
                     </div>
                   </div>
                   {/* address */}
+                  {/* sms*/}
 
-                  {userData.sms && (
-                    <>
-                      <hr className="mt-6 border-b-1 border-blueGray-300" />
-                      <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase flex gap-4 items-center">
-                        SMS Service
+                  <hr className="mt-6 border-b-1 border-blueGray-300" />
+                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase flex gap-4 items-center">
+                    SMS Service
+                    <input
+                      onChange={handleCheckboxChange} 
+                      type="checkbox"
+                      checked={showInputs}
+                      name=""
+                      id=""
+                      style={{ transform: "scale(1.2)" }}
+                    />
+                  </h6>
+                  {
+                    showInputs && (
+
+                  <div className="flex flex-wrap">
+                    <div className="w-full lg:w-12/12 px-4"></div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          sender id
+                        </label>
                         <input
-                          onChange={handleCheckboxChange}
-                          type="checkbox"
-                          name=""
-                          id=""
-                          style={{ transform: "scale(1.2)" }}
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setSenderId(e.target.value);
+                          }}
+                          value={senderId}
+                          placeholder="Sender Id"
                         />
-                      </h6>
-                      {showInputs && (
-                        <div className="flex flex-wrap">
-                          <div className="w-full lg:w-12/12 px-4"></div>
-                          <div className="w-full lg:w-6/12 px-4">
-                            <div className="relative w-full mb-3">
-                              <label
-                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                htmlFor="grid-password"
-                              >
-                                sender id
-                              </label>
-                              <input
-                                type=""
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                onChange={(e) => {
-                                  setSenderId(e.target.value);
-                                }}
-                                value={senderId}
-                                placeholder="Sender Id"
-                              />
-                            </div>
-                          </div>
-                          <div className="w-full lg:w-6/12 px-4">
-                            <div className="relative w-full mb-3">
-                              <label
-                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                htmlFor="grid-password"
-                              >
-                                user name
-                              </label>
-                              <input
-                                type=""
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                onChange={(e) => {
-                                  setUsername(e.target.value);
-                                }}
-                                value={username}
-                                placeholder="User Name"
-                              />
-                            </div>
-                          </div>
-                          <div className="w-full lg:w-6/12 px-4">
-                            <div className="relative w-full mb-3">
-                              <label
-                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                htmlFor="grid-password"
-                              >
-                                password
-                              </label>
-                              <input
-                                type=""
-                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                onChange={(e) => {
-                                  setPassword(e.target.value);
-                                }}
-                                value={password}
-                                placeholder="Password"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          user name
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setUsername(e.target.value);
+                          }}
+                          value={username}
+                          placeholder="User Name"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          password
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                          }}
+                          value={password}
+                          placeholder=" password"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                    )
+                  }
 
+                  {/* sms */}
                   <hr className="mt-6 border-b-1 border-blueGray-300" />
                   <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                     Other Information
@@ -642,7 +657,7 @@ const AddOrganisation = () => {
                     type="button"
                     onClick={submitHandler}
                   >
-                    Add
+                   Edit
                   </button>
                 </form>
               </div>
@@ -654,4 +669,4 @@ const AddOrganisation = () => {
   );
 };
 
-export default AddOrganisation;
+export default EditOrg;

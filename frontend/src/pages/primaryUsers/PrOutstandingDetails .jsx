@@ -20,6 +20,8 @@ function OutStandingDetails({ onTabChange }) {
     (state) => state.prSettlementData.prSettlementData.enteredAmount
   );
 
+  console.log(data);
+
   const [enteredAmount, setEnteredAmount] = useState(() => {
     const storedAmount = prevAmount;
 
@@ -103,13 +105,17 @@ function OutStandingDetails({ onTabChange }) {
       }
     });
 
+   
+
     const settlementData = {
       party_id: data[0]?.party_id,
       party_name: data[0]?.party_name,
+      mobile_no:data[0]?.mobile_no,
       totalBillAmount: parseFloat(total),
       cmp_id: data[0]?.cmp_id,
       billData: results,
       enteredAmount: enteredAmount,
+
     };
 
     console.log(settlementData);

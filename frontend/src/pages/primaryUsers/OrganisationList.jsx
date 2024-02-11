@@ -4,14 +4,14 @@ import { toast } from "react-toastify";
 import Pagination from "../../components/common/Pagination";
 import Sidebar from "../../components/homePage/Sidebar";
 import { IoReorderThreeSharp } from "react-icons/io5";
-
+import { FaEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function OrganisationList() {
   const [organizations, setOrganizations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(6);
   const [showSidebar, setShowSidebar] = useState(false);
-
 
   useEffect(() => {
     const fetchOrganiszations = async () => {
@@ -43,16 +43,16 @@ function OrganisationList() {
   return (
     <div className="flex">
       <div className="" style={{ height: "100vh" }}>
-        <Sidebar TAB={"orgList"}  showBar={showSidebar} />
+        <Sidebar TAB={"orgList"} showBar={showSidebar} />
       </div>
 
       <section className=" flex-1 antialiased bg-gray-100 text-gray-600 h-screen py-0 md:p-6 overflow-y-scroll   ">
-        <div className="block md:hidden bg-[#201450] text-white mb-2 p-3 flex items-center gap-3 ">
-        <IoReorderThreeSharp
-              onClick={handleToggleSidebar}
-              className="block md:hidden"
-            />
-          <p> Organizations </p>
+        <div className="block md:hidden bg-[#201450] text-white mb-2 p-3 flex items-center gap-3  text-lg">
+          <IoReorderThreeSharp
+            onClick={handleToggleSidebar}
+            className="block md:hidden text-3xl"
+          />
+          <p> Companies </p>
         </div>
         <div className="flex flex-col h-full px-[5px]">
           {/* <!-- Table --> */}
@@ -68,15 +68,16 @@ function OrganisationList() {
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-left">Name</div>
                       </th>
-                      <th className="p-2 whitespace-nowrap">
+                      {/* <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-left">Place</div>
-                      </th>
+                      </th> */}
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-left">Email</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-left">Mobile</div>
                       </th>
+                     
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-left">Gst No.</div>
                       </th>
@@ -88,6 +89,9 @@ function OrganisationList() {
                       </th>
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-center">Country</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-center">Edit</div>
                       </th>
                     </tr>
                   </thead>
@@ -102,15 +106,17 @@ function OrganisationList() {
                               </div>
                             </div>
                           </td>
-                          <td className="p-2 whitespace-nowrap">
+                          {/* <td className="p-2 whitespace-nowrap">
                             <div className="text-left"> {item.place}</div>
-                          </td>
+                          </td> */}
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-left"> {item.email}</div>
                           </td>
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-left"> {item.mobile}</div>
                           </td>
+                         
+
                           <td className="p-2 whitespace-nowrap">
                             <div className="text-left"> {item.gstNum}</div>
                           </td>
@@ -125,6 +131,20 @@ function OrganisationList() {
                           <td className="p-2 whitespace-nowrap">
                             <div className=" text-center">{item.country}</div>
                           </td>
+
+                          <Link to={`/pUsers/editOrg/${item._id}`}>
+                            {/* <td className="flex items-center justify-center">
+                              <div className="h-full flex justify-center items-center">
+                                
+                              </div>
+                            </td> */}
+                            <td className="p-2 whitespace-nowrap">
+                              <div className=" text-center">
+                                {" "}
+                                <FaEdit />
+                              </div>
+                            </td>
+                          </Link>
                         </tr>
                       ))
                     ) : (

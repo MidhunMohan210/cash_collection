@@ -4,9 +4,14 @@ const organizationSchema = new mongoose.Schema(
   {
   
     name: { type: String, required: true },
-    place: { type: String },
+    flat: { type: String },
+    road: { type: String },
+    landmark: { type: String },
     email:{type:String},
     mobile:{ type: Number },
+    senderId:{type:String},
+    username:{type:String},
+    password:{type:String},
     pin: { type: Number },
     gstNum:{ type: String },
     country: { type: String },

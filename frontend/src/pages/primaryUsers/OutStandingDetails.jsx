@@ -67,9 +67,9 @@ function OutStandingDetails({ onTabChange, id, cmp_id, total }) {
             <div className="flex items-center gap-2">
               <IoIosArrowRoundBack
             
-                className="text-3xl text-white"
+                className="text-3xl text-white "
               />
-              <p className="text-md text-white font-bold">Receive Payment</p>
+              <p className="text-md text-white font-bold text-lg">Receive Payment</p>
             </div>
             <p className="text-[12px] text-white mt-1 font-bold  ">
               23 JAN 2024

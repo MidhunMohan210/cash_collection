@@ -50,6 +50,7 @@ function SecLogin() {
         setLoader(false);
         toast.success(res.data.message);
         const loginData=JSON.stringify(res.data.data)
+        console.log(loginData);
         localStorage.setItem("sUserData",loginData)
         navigate("/sUsers/outstanding");
         setEmail("");

@@ -1,3 +1,4 @@
+
 import {Route,Routes} from 'react-router-dom'
 import Register from '../pages/primaryUsers/Register'
 import Login from '../pages/primaryUsers/Login'
@@ -29,6 +30,10 @@ import ResetPassword from '../pages/primaryUsers/ResetPassword'
 import ForgotPasswordSec from '../pages/secUsers/ForgotPasswordSec'
 import OtpSec from '../pages/secUsers/OtpSec'
 import ResetPasswordSec from '../pages/secUsers/ResetPasswordSec'
+import ReceiptDetails from '../pages/primaryUsers/ReceiptDetails'
+import SecReceptionDetails from '../pages/secUsers/ReceiptDetails'
+import Dashboard from '../pages/primaryUsers/Dashboard'
+import EditOrg from '../pages/primaryUsers/EditOrg'
 
 
 const Routers = () => {
@@ -42,6 +47,7 @@ const Routers = () => {
         <Route path='/pUsers/resetPassword' element={<ResetPassword/>}></Route>
         {/* <Route path='/pUsers/home' element={<Home></Home>}></Route> */}
         <Route path='/pUsers/addOrganization' element={<ProtectedPriRoute><AddOrganisation/></ProtectedPriRoute>}></Route>
+        <Route path='/pUsers/editOrg/:id' element={<ProtectedPriRoute><EditOrg/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/organizationList' element={<ProtectedPriRoute><OrganizationList/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/addSecUsers' element={<ProtectedPriRoute><AddSecUsers/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/secUsersList' element={<ProtectedPriRoute><SecUsersList/></ProtectedPriRoute>}></Route>
@@ -49,7 +55,9 @@ const Routers = () => {
         <Route path='/pUsers/outstanding' element={<ProtectedPriRoute>< PrimaryOutstanding/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/outstandingDetails/:party_id/:cmp_id/:total' element={<ProtectedPriRoute>< PrOutstandingDetails/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/transaction' element={<ProtectedPriRoute><PriTransaction /></ProtectedPriRoute>}></Route>
+        <Route path='/pUsers/receiptDetails/:id' element={<ProtectedPriRoute><ReceiptDetails/></ProtectedPriRoute>}></Route>
         <Route path='/pUsers/bankLIst' element={<ProtectedPriRoute><BankList/></ProtectedPriRoute>}></Route>
+        <Route path='/pUsers/dashboard' element={<ProtectedPriRoute><Dashboard/></ProtectedPriRoute>}></Route>
 
 
 
@@ -70,6 +78,7 @@ const Routers = () => {
         <Route path='/sUsers/outstandingDetails/:party_id/:cmp_id/:total' element={<ProtectedSecRoute><OutstandingDetails/></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/payment' element={<ProtectedSecRoute><PaymentSec/></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/transaction' element={<ProtectedSecRoute><Transaction /></ProtectedSecRoute>}></Route>
+        <Route path='/sUsers/receiptDetails/:id' element={<ProtectedSecRoute><SecReceptionDetails/></ProtectedSecRoute>}></Route>
 
     </Routes>
   )

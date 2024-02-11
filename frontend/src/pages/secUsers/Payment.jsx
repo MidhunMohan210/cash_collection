@@ -7,6 +7,9 @@ import { useSelector } from "react-redux";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
+
+
 
 function Payment() {
   const [method, setMethod] = useState("");
@@ -143,13 +146,17 @@ function Payment() {
         }
       );
 
-      console.log(res.data);
-      toast.success(res.data.message);
-
-      setTimeout(() => {
-        navigate("/sUsers/transaction");
-      }, 2000);
-
+      Swal.fire({
+        title: "Success",
+        text: res.data.message,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // Navigate upon clicking "OK"
+        if (result.isConfirmed) {
+          navigate(`/sUsers/receiptDetails/${res.data.id}`);
+        }
+      });
       // dispatch(addData(res.data.outstandingData));
     } catch (error) {
       console.log(error);
