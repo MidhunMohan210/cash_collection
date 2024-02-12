@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from "react";
-import { IoReorderThree } from "react-icons/io5";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +12,10 @@ import { IoIosCreate } from "react-icons/io";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { IoReceipt } from "react-icons/io5";
 import { PiBankFill } from "react-icons/pi";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
 import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
-
+import { IoChevronBackCircle } from "react-icons/io5";
 
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
@@ -26,14 +25,11 @@ function Sidebar({ TAB, showBar }) {
   const [organizations, setOrganizations] = useState([]);
   const [selectedOrg, setSelectedOrg] = useState("");
 
-
-
   const navigate = useNavigate();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const selectedOrgFromRedux = useSelector(
     (state) => state.setSelectedOrganization.selectedOrg
   );
-
 
   const [expandedSections, setExpandedSections] = useState({
     orgList: false,
@@ -45,10 +41,8 @@ function Sidebar({ TAB, showBar }) {
   });
 
   console.log(selectedOrg);
-  const user=localStorage.getItem('pUserData');
+  const user = localStorage.getItem("pUserData");
   console.log(user);
-
-
 
   useEffect(() => {
     if (TAB == "addOrg") {
@@ -75,7 +69,6 @@ function Sidebar({ TAB, showBar }) {
     }));
   };
 
-
   const fetchOrganizations = async () => {
     try {
       const res = await api.get("/api/pUsers/getOrganizations", {
@@ -99,7 +92,6 @@ function Sidebar({ TAB, showBar }) {
   };
 
   useEffect(() => {
-
     fetchOrganizations();
     const getUserData = async () => {
       try {
@@ -112,7 +104,7 @@ function Sidebar({ TAB, showBar }) {
       }
     };
     getUserData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -134,7 +126,6 @@ function Sidebar({ TAB, showBar }) {
     }
   }, [showSidebar]);
 
-
   const handleSidebarItemClick = () => {
     if (window.innerWidth < 768) {
       setShowSidebar(!showSidebar);
@@ -152,7 +143,7 @@ function Sidebar({ TAB, showBar }) {
       );
       toast.success(res.data.message);
       localStorage.removeItem("pUserData");
-      dispatch(removeSelectedOrganization())
+      dispatch(removeSelectedOrganization());
       navigate("/pUsers/login");
     } catch (error) {
       console.error(error);
@@ -160,7 +151,7 @@ function Sidebar({ TAB, showBar }) {
     }
   };
 
-console.log(selectedOrg);
+  console.log(selectedOrg);
 
   return (
     <div className="sb">
@@ -172,20 +163,31 @@ console.log(selectedOrg);
       </div>
 
       <aside
-        className={`${
-          showSidebar ? "z-50 block absolute" : "hidden md:block"
-        } flex flex-col w-64 h-screen bg-gray-900 px-4 py-8 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 `}
-      > 
+        className={` ${
+          showSidebar
+            ? "z-50 absolute h-[125vh] transform translate-x-0 "
+            : "-translate-x-full md:translate-x-0  z-50 absolute md:relative "
+        }  transition-transform duration-500 ease-in-out flex flex-col w-64 h-screen  px-4 py-8  bg-transparent  border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
+          
+        overflow-y-auto`}
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {/* <div className="w-full relative">
+
+        <div className="text-white absolute right-[-20px]  ">
+          <IoChevronBackCircle />
+        </div>
+        </div> */}
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
             className="object-cover w-24 h-24 mx-2 rounded-full"
             src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
             alt="avatar"
           />
-          <h4 className="mx-2 mt-2 font-medium text-white">
+          <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">
             {userData.userName}
           </h4>
-          <p className="mx-2 mt-1 text-sm font-medium text-white">
+          <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">
             {userData.email}
           </p>
 
@@ -199,7 +201,7 @@ console.log(selectedOrg);
             type="button"
           >
             {selectedOrg.name}
-            
+
             <svg
               class="w-2.5 h-2.5 ms-3"
               aria-hidden="true"
@@ -224,24 +226,25 @@ console.log(selectedOrg);
             >
               <div
                 id="dropdown"
-                className="z-10 absolute mt-2   bg-gray-700 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                className="z-10 absolute mt-2   bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
               >
                 <ul
-                  class="py-2 text-sm text-gray-200"
+                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownDefaultButton"
                 >
                   {organizations.map((el, index) => (
-                    <li key={index} >
+                    <li key={index}>
                       <a
-                        onClick={()=>{setDropdown(!dropdown);
+                        onClick={() => {
+                          setDropdown(!dropdown);
                           setSelectedOrg(el);
-                          dispatch(setSelectedOrganization(el))}}
+                          dispatch(setSelectedOrganization(el));
+                        }}
                         // onClick={() => handleDropDownchange(el)}
                         href="#"
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         {el.name}
-                     
                       </a>
                     </li>
                   ))}
@@ -249,10 +252,6 @@ console.log(selectedOrg);
               </div>
             </div>
           )}
-
-
-
-
 
           <div>
             <button onClick={handleLogout} class="Btn">
