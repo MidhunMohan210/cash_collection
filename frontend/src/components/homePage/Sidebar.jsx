@@ -45,6 +45,8 @@ function Sidebar({ TAB, showBar }) {
   });
 
   console.log(selectedOrg);
+  const user=localStorage.getItem('pUserData');
+  console.log(user);
 
 
 
@@ -124,6 +126,15 @@ function Sidebar({ TAB, showBar }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (showSidebar) {
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.body.classList.remove("sidebar-open");
+    }
+  }, [showSidebar]);
+
+
   const handleSidebarItemClick = () => {
     if (window.innerWidth < 768) {
       setShowSidebar(!showSidebar);
@@ -161,23 +172,20 @@ console.log(selectedOrg);
       </div>
 
       <aside
-        className={` ${
-          showSidebar ? "z-50 block absolute h-[125vh] " : " hidden md:block"
-        } flex flex-col w-64 h-screen  px-4 py-8  bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
-          
-        overflow-y-auto`}
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
+        className={`${
+          showSidebar ? "z-50 block absolute" : "hidden md:block"
+        } flex flex-col w-64 h-screen bg-gray-900 px-4 py-8 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 `}
+      > 
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
             className="object-cover w-24 h-24 mx-2 rounded-full"
             src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
             alt="avatar"
           />
-          <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">
+          <h4 className="mx-2 mt-2 font-medium text-white">
             {userData.userName}
           </h4>
-          <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+          <p className="mx-2 mt-1 text-sm font-medium text-white">
             {userData.email}
           </p>
 
@@ -216,10 +224,10 @@ console.log(selectedOrg);
             >
               <div
                 id="dropdown"
-                className="z-10 absolute mt-2   bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                className="z-10 absolute mt-2   bg-gray-700 divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
               >
                 <ul
-                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  class="py-2 text-sm text-gray-200"
                   aria-labelledby="dropdownDefaultButton"
                 >
                   {organizations.map((el, index) => (
