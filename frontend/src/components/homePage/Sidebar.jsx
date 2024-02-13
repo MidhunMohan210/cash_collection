@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
 import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
 import { IoChevronBackCircle } from "react-icons/io5";
+import { IoReorderThreeSharp } from "react-icons/io5";
+
 
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
@@ -154,13 +156,8 @@ function Sidebar({ TAB, showBar }) {
   console.log(selectedOrg);
 
   return (
-    <div className="sb">
-      <div className={`md:hidden absolute`}>
-        {/* <IoReorderThree
-          onClick={handleToggleSidebar}
-          className="text-4xl ml-4 mt-3 z-20"
-        /> */}
-      </div>
+    <div className="relative">
+    
 
       <aside
         className={` ${
@@ -172,12 +169,14 @@ function Sidebar({ TAB, showBar }) {
         overflow-y-auto`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {/* <div className="w-full relative">
+        <div className="w-full relative">
 
-        <div className="text-white absolute right-[-20px]  ">
-          <IoChevronBackCircle />
+        <div 
+        onClick={handleSidebarItemClick}
+        className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  ">
+        <IoReorderThreeSharp/>
         </div>
-        </div> */}
+        </div>
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
             className="object-cover w-24 h-24 mx-2 rounded-full"

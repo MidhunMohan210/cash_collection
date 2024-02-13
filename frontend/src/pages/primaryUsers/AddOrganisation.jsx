@@ -9,7 +9,6 @@ import { IoReorderThreeSharp } from "react-icons/io5";
 
 const AddOrganisation = () => {
   const [name, setName] = useState("");
-  const [place, setPlace] = useState("");
   const [pin, setPin] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("India");
@@ -27,6 +26,11 @@ const AddOrganisation = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState("");
+  const [website, setWebsite] = useState("");
+  const [pan, setPan] = useState("");
+  const [financialYear, setFinancialYear] = useState("");
+
+  console.log(country);
 
   const handleCheckboxChange = () => {
     setShowInputs(!showInputs);
@@ -50,25 +54,28 @@ const AddOrganisation = () => {
   };
 
   const submitHandler = async () => {
+
     if (
-      !name ||
-      // !place ||
-      !pin ||
-      !mobile ||
-      !gst ||
-      !email ||
+      !name.trim() ||
+      !gst.trim() ||
+      !email.trim() ||
       !state ||
       !country ||
-      !flat ||
-      !road ||
-      !landmark
+      !flat.trim() ||
+      !road.trim() ||
+      !website.trim() || 
+      !financialYear.trim() ||
+      !landmark.trim()||
+      !pin||
+      !mobile
     ) {
       toast.error("All fields must be filled");
       return;
     }
+    
 
     if (showInputs) {
-      if (!senderId || !username || !password) {
+      if (!senderId.trim() || !username.trim() || !password.trim()) {
         toast.error("SenderId, Username, and Password must be filled");
         return;
       }
@@ -79,10 +86,7 @@ const AddOrganisation = () => {
       return;
     }
 
-    // if (place.length > 30) {
-    //   toast.error("Place must be at most 30 characters");
-    //   return;
-    // }
+
 
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
       toast.error("Invalid email address");
@@ -121,6 +125,19 @@ const AddOrganisation = () => {
       return;
     }
 
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+      toast.error("Invalid PAN number");
+      return;
+    }
+    if (
+      !/^((https?|ftp):\/\/)?(www\.)?[\w-]+\.[a-zA-Z]{2,}(\/\S*)?$/.test(
+        website
+      )
+    ) {
+      toast.error("Invalid website URL");
+      return;
+    }
+
     const formData = {
       name,
       // place,
@@ -138,6 +155,9 @@ const AddOrganisation = () => {
       senderId,
       username,
       password,
+      website,
+      pan,
+      financialYear,
     };
 
     console.log(formData);
@@ -167,7 +187,9 @@ const AddOrganisation = () => {
       setSenderId("");
       setUsername("");
       setPassword("");
-      
+      setWebsite("");
+      setPan("");
+      setFinancialYear("");
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
@@ -211,7 +233,7 @@ const AddOrganisation = () => {
     "West Bengal",
   ];
 
-  useEffect(()=>{
+  useEffect(() => {
     const getUserData = async () => {
       try {
         const res = await api.get("/api/pUsers/getPrimaryUserData", {
@@ -223,11 +245,7 @@ const AddOrganisation = () => {
       }
     };
     getUserData();
-  },[])
-
-
-
-
+  }, []);
 
   return (
     <div className="flex ">
@@ -236,7 +254,7 @@ const AddOrganisation = () => {
       </div>
 
       <div className=" ">
-        <section className=" bg-blueGray-50 h-screen overflow-y-scroll">
+        <section className=" bg-blueGray-50 h-screen overflow-y-scroll ">
           <div className="bg-[#201450] sticky top-0 p-3 z-100 text-white text-lg font-bold flex items-center gap-3 z-20">
             <IoReorderThreeSharp
               onClick={handleToggleSidebar}
@@ -244,7 +262,8 @@ const AddOrganisation = () => {
             />
             <p>Add organization</p>
           </div>
-          <div className="w-full lg:w-8/12 px-4 mx-auto  pb-[30px]  ">
+
+          <div className="w-full lg:w-8/12 px-4 mx-auto  pb-[30px] mt-5  ">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               <div className="rounded-t bg-white mb-0 px-6 py-2">
                 <div className="text-center flex justify-between">
@@ -409,6 +428,26 @@ const AddOrganisation = () => {
                         />
                       </div>
                     </div>
+
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          Pin
+                        </label>
+                        <input
+                          type="number"
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setPin(e.target.value);
+                          }}
+                          value={pin}
+                          placeholder="Postal Code"
+                        />
+                      </div>
+                    </div>
                   </div>
                   {/* address */}
 
@@ -510,7 +549,7 @@ const AddOrganisation = () => {
                       />
                     </div> */}
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    {/* <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -528,7 +567,7 @@ const AddOrganisation = () => {
                           placeholder="Postal Code"
                         />
                       </div>
-                    </div>
+                    </div> */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -546,6 +585,76 @@ const AddOrganisation = () => {
                           value={gst}
                           placeholder="Gst No"
                         />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          website
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setWebsite(e.target.value);
+                          }}
+                          value={website}
+                          placeholder="Website"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          Pan
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setPan(e.target.value);
+                          }}
+                          value={pan}
+                          placeholder="Pan No"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="financial-year-select"
+                        >
+                          Financial Year
+                        </label>
+                        <select
+                          id="financial-year-select"
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setFinancialYear(e.target.value);
+                          }}
+                          value={financialYear}
+                        >
+                          <option value="">Select Financial Year</option>
+                          {Array.from({ length: 11 }, (_, index) => {
+                            const startYear = 2020 + index;
+                            const endYear = startYear + 1;
+                            return (
+                              <option
+                                key={index}
+                                value={`${startYear}-${endYear}`}
+                              >
+                                {startYear}-{endYear}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                     </div>
 
@@ -596,45 +705,44 @@ const AddOrganisation = () => {
                         </select>
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-center gap-0 mt-4 m-4 relative ">
-                      {logo && !loader && (
-                        <label htmlFor="photoInput" className="cursor-pointer">
-                          <figure className="absolute top-3 z-10  w-[80px] h-[80px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center">
-                            <img
-                              src={logo}
-                              alt=""
-                              className="w-full h-full object-cover rounded-full"
-                            />
-                          </figure>
-                        </label>
-                      )}
-
-                      {loader && (
-                        <figure className=" absolute top-3 z-20  w-[80px] h-[80px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center bg-white ">
-                          <HashLoader
-                            color="#6056ec"
-                            size={30}
-                            speedMultiplier={1.6}
+                  </div>
+                  <div className="flex items-center  gap-0 mt-4 m-4 relative ">
+                    {logo && !loader && (
+                      <label htmlFor="photoInput" className="cursor-pointer">
+                        <figure className="absolute top-3 z-10  w-[80px] h-[80px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center">
+                          <img
+                            src={logo}
+                            alt=""
+                            className="w-full h-full object-cover rounded-full"
                           />
                         </figure>
-                      )}
+                      </label>
+                    )}
 
-                      <div className="  mt-3  relative w-[80px] h-[80px] flex   rounded-full border  ">
-                        <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                          LOGO
-                        </span>
-                        <input
-                          type="file"
-                          name="photo"
-                          id="photoInput"
-                          onChange={(e) => {
-                            handleFileInputChange(e);
-                          }}
-                          accept=".jpg,.png"
-                          className="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
+                    {loader && (
+                      <figure className=" absolute top-3 z-20  w-[80px] h-[80px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center bg-white ">
+                        <HashLoader
+                          color="#6056ec"
+                          size={30}
+                          speedMultiplier={1.6}
                         />
-                      </div>
+                      </figure>
+                    )}
+
+                    <div className="  mt-3  relative w-[80px] h-[80px] flex   rounded-full border  ">
+                      <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        LOGO
+                      </span>
+                      <input
+                        type="file"
+                        name="photo"
+                        id="photoInput"
+                        onChange={(e) => {
+                          handleFileInputChange(e);
+                        }}
+                        accept=".jpg,.png"
+                        className="absolute top-0 left-0 h-full opacity-0 cursor-pointer"
+                      />
                     </div>
                   </div>
                   <button

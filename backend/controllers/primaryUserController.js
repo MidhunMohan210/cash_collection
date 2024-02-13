@@ -168,7 +168,9 @@ export const getPrimaryUserData = async (req, res) => {
 export const addOrganizations = async (req, res) => {
   const { name,  pin, state, country, email, mobile, gst, logo ,  flat,
     road,
-    landmark, senderId,
+    landmark, senderId, website,
+    pan,
+    financialYear,
     username,
     password} =
     req.body;
@@ -192,6 +194,9 @@ export const addOrganizations = async (req, res) => {
       senderId,
       username,
       password,
+      website,
+      pan,
+      financialYear,
       gstNum: gst,
     });
 
@@ -276,8 +281,8 @@ export const editOrg = async (req, res) => {
   const orgId = req.params.id;
   try {
     const updatedOrg = await Organization.findByIdAndUpdate(orgId, req.body, {
-      new: true, // Return the modified document rather than the original
-      runValidators: true, // Run validators to ensure the updated data meets schema requirements
+      new: true, 
+      runValidators: true, 
     });
 
     if (!updatedOrg) {

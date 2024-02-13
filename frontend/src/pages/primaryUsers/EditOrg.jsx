@@ -26,6 +26,10 @@ const EditOrg = () => {
   const [senderId, setSenderId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userData, setUserData] = useState("");
+  const [website, setWebsite] = useState("");
+  const [pan, setPan] = useState("");
+  const [financialYear, setFinancialYear] = useState("");
 
 
 const {id}=useParams();
@@ -39,7 +43,9 @@ const navigate=useNavigate()
           });
 
         
-          const { name, flat, road, landmark, email, mobile, senderId, username, password, pin, gstNum, country, logo, state } = res.data.organizationData
+          const { name, flat, road, landmark, email, mobile, senderId, username, password, pin, gstNum, country, logo, state ,website,
+            pan,
+            financialYear, } = res.data.organizationData
 
           setName(name);
           setFlat(flat);
@@ -55,6 +61,9 @@ const navigate=useNavigate()
           setCountry(country);
           setLogo(logo);
           setState(state);
+          setWebsite(website);
+          setPan(pan);
+          setFinancialYear(financialYear)
 
           if(senderId.length>0){
 
@@ -68,6 +77,20 @@ const navigate=useNavigate()
         }
       };
       fetchSingleOrganization();
+    }, []);
+
+    useEffect(() => {
+      const getUserData = async () => {
+        try {
+          const res = await api.get("/api/pUsers/getPrimaryUserData", {
+            withCredentials: true,
+          });
+          setUserData(res.data.data.userData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getUserData();
     }, []);
     
   
@@ -95,24 +118,26 @@ const navigate=useNavigate()
 
   const submitHandler = async () => {
     if (
-      !name ||
-      // !place ||
-      !pin ||
-      !mobile ||
-      !gst ||
-      !email ||
+      !name.trim() ||
+      !gst.trim() ||
+      !email.trim() ||
       !state ||
       !country ||
-      !flat ||
-      !road ||
-      !landmark
+      !flat.trim() ||
+      !road.trim() ||
+      !website.trim() || 
+      !financialYear.trim() ||
+      !landmark.trim()||
+      !pin||
+      !mobile
     ) {
       toast.error("All fields must be filled");
       return;
     }
+    
 
     if (showInputs) {
-      if (!senderId || !username || !password) {
+      if (!senderId.trim() || !username.trim() || !password.trim()) {
         toast.error("SenderId, Username, and Password must be filled");
         return;
       }
@@ -123,10 +148,7 @@ const navigate=useNavigate()
       return;
     }
 
-    // if (place.length > 30) {
-    //   toast.error("Place must be at most 30 characters");
-    //   return;
-    // }
+
 
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
       toast.error("Invalid email address");
@@ -165,10 +187,21 @@ const navigate=useNavigate()
       return;
     }
 
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+      toast.error("Invalid PAN number");
+      return;
+    }
+    if (
+      !/^((https?|ftp):\/\/)?(www\.)?[\w-]+\.[a-zA-Z]{2,}(\/\S*)?$/.test(
+        website
+      )
+    ) {
+      toast.error("Invalid website URL");
+      return;
+    }
+
     const formData = {
       name,
-      // place,
-
       pin,
       state,
       country,
@@ -181,7 +214,10 @@ const navigate=useNavigate()
       landmark,
       senderId,
       username,
-      password
+      password,
+      website,
+      pan,
+      financialYear,
     };
 
     console.log(formData);
@@ -213,7 +249,7 @@ const navigate=useNavigate()
     "Bihar",
     "Chandigarh",
     "Chhattisgarh",
-    "Dadra and Nagar Haveli and Daman and Diu",
+    "Dadra",
     "Delhi",
     "Goa",
     "Gujarat",
@@ -422,87 +458,108 @@ const navigate=useNavigate()
                         />
                       </div>
                     </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          Pin
+                        </label>
+                        <input
+                          type="number"
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setPin(e.target.value);
+                          }}
+                          value={pin}
+                          placeholder="Postal Code"
+                        />
+                      </div>
+                    </div>
                   </div>
                   {/* address */}
                   {/* sms*/}
 
-                  <hr className="mt-6 border-b-1 border-blueGray-300" />
-                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase flex gap-4 items-center">
-                    SMS Service
-                    <input
-                      onChange={handleCheckboxChange} 
-                      type="checkbox"
-                      checked={showInputs}
-                      name=""
-                      id=""
-                      style={{ transform: "scale(1.2)" }}
-                    />
-                  </h6>
-                  {
-                    showInputs && (
 
-                  <div className="flex flex-wrap">
-                    <div className="w-full lg:w-12/12 px-4"></div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          sender id
-                        </label>
+
+                  {userData.sms && (
+                    <>
+                      <hr className="mt-6 border-b-1 border-blueGray-300" />
+                      <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase flex gap-4 items-center">
+                        SMS Service
                         <input
-                          type=""
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          onChange={(e) => {
-                            setSenderId(e.target.value);
-                          }}
-                          value={senderId}
-                          placeholder="Sender Id"
+                          onChange={handleCheckboxChange}
+                          type="checkbox"
+                          name=""
+                          id=""
+                          style={{ transform: "scale(1.2)" }}
                         />
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          user name
-                        </label>
-                        <input
-                          type=""
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          onChange={(e) => {
-                            setUsername(e.target.value);
-                          }}
-                          value={username}
-                          placeholder="User Name"
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          password
-                        </label>
-                        <input
-                          type=""
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          onChange={(e) => {
-                            setPassword(e.target.value);
-                          }}
-                          value={password}
-                          placeholder=" password"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                    )
-                  }
+                      </h6>
+                      {showInputs && (
+                        <div className="flex flex-wrap">
+                          <div className="w-full lg:w-12/12 px-4"></div>
+                          <div className="w-full lg:w-6/12 px-4">
+                            <div className="relative w-full mb-3">
+                              <label
+                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                htmlFor="grid-password"
+                              >
+                                sender id
+                              </label>
+                              <input
+                                type=""
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                onChange={(e) => {
+                                  setSenderId(e.target.value);
+                                }}
+                                value={senderId}
+                                placeholder="Sender Id"
+                              />
+                            </div>
+                          </div>
+                          <div className="w-full lg:w-6/12 px-4">
+                            <div className="relative w-full mb-3">
+                              <label
+                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                htmlFor="grid-password"
+                              >
+                                user name
+                              </label>
+                              <input
+                                type=""
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                onChange={(e) => {
+                                  setUsername(e.target.value);
+                                }}
+                                value={username}
+                                placeholder="User Name"
+                              />
+                            </div>
+                          </div>
+                          <div className="w-full lg:w-6/12 px-4">
+                            <div className="relative w-full mb-3">
+                              <label
+                                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                htmlFor="grid-password"
+                              >
+                                password
+                              </label>
+                              <input
+                                type=""
+                                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                onChange={(e) => {
+                                  setPassword(e.target.value);
+                                }}
+                                value={password}
+                                placeholder="Password"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   {/* sms */}
                   <hr className="mt-6 border-b-1 border-blueGray-300" />
@@ -525,25 +582,7 @@ const navigate=useNavigate()
                       />
                     </div> */}
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
-                        >
-                          Pin
-                        </label>
-                        <input
-                          type="number"
-                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                          onChange={(e) => {
-                            setPin(e.target.value);
-                          }}
-                          value={pin}
-                          placeholder="Postal Code"
-                        />
-                      </div>
-                    </div>
+                   
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -561,6 +600,77 @@ const navigate=useNavigate()
                           value={gst}
                           placeholder="Gst No"
                         />
+                      </div>
+                    </div>
+
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          website
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setWebsite(e.target.value);
+                          }}
+                          value={website}
+                          placeholder="Website"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="grid-password"
+                        >
+                          Pan
+                        </label>
+                        <input
+                          type=""
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setPan(e.target.value);
+                          }}
+                          value={pan}
+                          placeholder="Pan No"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="financial-year-select"
+                        >
+                          Financial Year
+                        </label>
+                        <select
+                          id="financial-year-select"
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          onChange={(e) => {
+                            setFinancialYear(e.target.value);
+                          }}
+                          value={financialYear}
+                        >
+                          <option value="">Select Financial Year</option>
+                          {Array.from({ length: 11 }, (_, index) => {
+                            const startYear = 2020 + index;
+                            const endYear = startYear + 1;
+                            return (
+                              <option
+                                key={index}
+                                value={`${startYear}-${endYear}`}
+                              >
+                                {startYear}-{endYear}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                     </div>
 
