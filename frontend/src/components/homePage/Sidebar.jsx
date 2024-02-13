@@ -18,7 +18,6 @@ import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice
 import { IoChevronBackCircle } from "react-icons/io5";
 import { IoReorderThreeSharp } from "react-icons/io5";
 
-
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -157,25 +156,23 @@ function Sidebar({ TAB, showBar }) {
 
   return (
     <div className="relative">
-    
-
       <aside
         className={` ${
           showSidebar
             ? "z-50 absolute h-[125vh] transform translate-x-0 "
             : "-translate-x-full md:translate-x-0  z-50 absolute md:relative "
-        }  transition-transform duration-500 ease-in-out flex flex-col w-64 h-screen  px-4 py-8  bg-transparent  border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
+        }  transition-transform duration-500 ease-in-out flex flex-col w-64 h-screen  px-4 py-8  bg-gray-900  border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
           
         overflow-y-auto`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <div className="w-full relative">
-
-        <div 
-        onClick={handleSidebarItemClick}
-        className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  ">
-        <IoReorderThreeSharp/>
-        </div>
+          <div
+            onClick={handleSidebarItemClick}
+            className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  "
+          >
+            <IoReorderThreeSharp />
+          </div>
         </div>
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
@@ -183,10 +180,10 @@ function Sidebar({ TAB, showBar }) {
             src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
             alt="avatar"
           />
-          <h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">
+          <h4 className="mx-2 mt-2 font-medium text-white dark:text-gray-200">
             {userData.userName}
           </h4>
-          <p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+          <p className="mx-2 mt-1 text-sm font-medium text-white dark:text-gray-400">
             {userData.email}
           </p>
 

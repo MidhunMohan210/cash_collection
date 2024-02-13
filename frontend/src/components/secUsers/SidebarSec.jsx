@@ -10,6 +10,7 @@ import { setSecSelectedOrganization ,removeSecSelectedOrg} from "../../../slices
 import { Link } from "react-router-dom";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { IoReceipt } from "react-icons/io5";
+import { IoReorderThreeSharp } from "react-icons/io5";
 
 
 
@@ -113,12 +114,22 @@ function SidebarSec({ onTabChange, TAB,showBar }) {
 
       <aside
         className={` ${
-          showSidebar ? "z-50 block absolute h-[125vh] " : " hidden md:block"
-        } flex flex-col w-64 h-screen  px-4 py-8  bg-gray-900 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
+          showSidebar
+            ? "z-50 absolute h-[125vh] transform translate-x-0 "
+            : "-translate-x-full md:translate-x-0  z-50 absolute md:relative "
+        } transition-transform duration-500 ease-in-out flex flex-col w-64 h-screen  px-4 py-8  bg-gray-900 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700   
           
         overflow-y-auto`}
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
+         <div className="w-full relative">
+          <div
+            onClick={handleSidebarItemClick}
+            className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  "
+          >
+            <IoReorderThreeSharp />
+          </div>
+        </div>
        
 
         {/* <a href="#" className="mx-auto">
