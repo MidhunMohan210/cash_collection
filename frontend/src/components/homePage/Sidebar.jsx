@@ -18,6 +18,7 @@ import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice
 import { IoChevronBackCircle } from "react-icons/io5";
 import { IoReorderThreeSharp } from "react-icons/io5";
 
+
 function Sidebar({ TAB, showBar }) {
   console.log(showBar);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -156,6 +157,8 @@ function Sidebar({ TAB, showBar }) {
 
   return (
     <div className="relative">
+    
+
       <aside
         className={` ${
           showSidebar
@@ -167,12 +170,12 @@ function Sidebar({ TAB, showBar }) {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <div className="w-full relative">
-          <div
-            onClick={handleSidebarItemClick}
-            className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  "
-          >
-            <IoReorderThreeSharp />
-          </div>
+
+        <div 
+        onClick={handleSidebarItemClick}
+        className="text-white text-3xl absolute right-0 top-[-20px]  md:hidden  ">
+        <IoReorderThreeSharp/>
+        </div>
         </div>
         <div className="flex flex-col items-center mt-6 -mx-2">
           <img
@@ -222,10 +225,10 @@ function Sidebar({ TAB, showBar }) {
             >
               <div
                 id="dropdown"
-                className="z-10 absolute mt-2   bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                className="z-10 absolute mt-2    divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-700"
               >
                 <ul
-                  class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  class="py-2 text-sm text-white dark:text-gray-200"
                   aria-labelledby="dropdownDefaultButton"
                 >
                   {organizations.map((el, index) => (
