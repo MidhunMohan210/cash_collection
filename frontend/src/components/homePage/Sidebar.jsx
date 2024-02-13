@@ -15,8 +15,9 @@ import { PiBankFill } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
 import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
-import { IoChevronBackCircle } from "react-icons/io5";
 import { IoReorderThreeSharp } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
+
 
 
 function Sidebar({ TAB, showBar }) {
@@ -268,6 +269,24 @@ function Sidebar({ TAB, showBar }) {
         <div className="">
           <div className="flex flex-col justify-between flex-1 mt-6  ">
             <nav>
+
+                <Link to={"/pUsers/dashboard"}>
+                <a
+                  onClick={() => {
+                    handleSidebarItemClick("outstanding");
+                  }}
+                  className={` ${
+                    TAB === "transaction"
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400"
+                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                  href="#"
+                >
+                  <MdDashboard />
+
+                  <span className="mx-4 font-medium">Dashboard</span>
+                </a>
+              </Link>
               <a
                 onClick={() => {
                   // handleSidebarItemClick("addOrganizations");
@@ -494,23 +513,7 @@ function Sidebar({ TAB, showBar }) {
                   <span className="mx-4 font-medium">Outstandings</span>
                 </a>
               </Link>
-              <Link to={"/pUsers/transaction"}>
-                <a
-                  onClick={() => {
-                    handleSidebarItemClick("outstanding");
-                  }}
-                  className={` ${
-                    TAB === "transaction"
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-400"
-                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                  href="#"
-                >
-                  <IoReceipt />
-
-                  <span className="mx-4 font-medium">Receipts</span>
-                </a>
-              </Link>
+            
             </nav>
           </div>
         </div>
