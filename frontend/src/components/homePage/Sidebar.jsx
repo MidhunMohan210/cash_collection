@@ -106,7 +106,7 @@ function Sidebar({ TAB, showBar }) {
       }
     };
     getUserData();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
