@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { IoReceipt } from "react-icons/io5";
 import { IoReorderThreeSharp } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
+
 
 
 
@@ -225,6 +227,30 @@ function SidebarSec({ onTabChange, TAB,showBar }) {
         <div className="">
           <div className="flex flex-col justify-between flex-1 mt-6  ">
             <nav>
+
+
+            <Link to={'/sUsers/dashboard'}>
+              <a
+                onClick={() => {
+                  handleSidebarItemClick("transaction");
+                }}
+                className={` ${
+                  TAB === "transaction"
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-400"
+                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                href="#"
+              >
+               <MdDashboard/>
+
+                <span className="mx-4 font-medium">Dashboard</span>
+              </a>
+              </Link>
+
+
+
+
+
               <Link to={"/sUsers/outstanding"}>
                 <a
                   onClick={() => {
@@ -243,23 +269,7 @@ function SidebarSec({ onTabChange, TAB,showBar }) {
                 </a>
               </Link>
 
-              <Link to={'/sUsers/transaction'}>
-              <a
-                onClick={() => {
-                  handleSidebarItemClick("transaction");
-                }}
-                className={` ${
-                  TAB === "transaction"
-                    ? "bg-gray-800 text-white"
-                    : "text-gray-400"
-                } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
-                href="#"
-              >
-               <IoReceipt/>
-
-                <span className="mx-4 font-medium">Receipts</span>
-              </a>
-              </Link>
+             
             </nav>
           </div>
         </div>

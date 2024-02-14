@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { FaCaretDown } from "react-icons/fa";
+import SidebarSec from "../../components/secUsers/SidebarSec";
 
 
 
@@ -23,7 +24,7 @@ function Dashboard() {
   const [data, setData] = useState([]);
 
   const org = useSelector(
-    (state) => state.setSelectedOrganization.selectedOrg
+    (state) => state.secSelectedOrganization.secSelectedOrg
   );
   console.log(org);
 
@@ -36,7 +37,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const res = await api.get(`/api/pUsers/transactions`, {
+        const res = await api.get(`/api/sUsers/transactions`, {
           withCredentials: true,
         });
 
@@ -78,7 +79,7 @@ function Dashboard() {
   return (
     <div className="flex bg-[#f9fdff]  ">
       <div>
-        <Sidebar TAB={"dash"} showBar={showSidebar} />
+        <SidebarSec TAB={"dash"} showBar={showSidebar} />
       </div>
 
       <div className="flex-1 h-screen overflow-y-scroll">
@@ -105,7 +106,7 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 p-6 lg:px-12 gap-4 md:gap-6 bg-white  ">
-            <Link to={'/pUsers/transaction'}>
+            <Link to={'/sUsers/transaction'}>
             <div className="flex flex-wrap -mx-6   duration-150 hover:scale-105 ease-in-out cursor-pointer ">
               <div className="w-full px-6 ">
                 <div className="flex items-center px-2 py-3 md:px-5 md:py-2 shadow-sm rounded-md bg-slate-100">

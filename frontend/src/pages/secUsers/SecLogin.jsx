@@ -52,7 +52,7 @@ function SecLogin() {
         const loginData=JSON.stringify(res.data.data)
         console.log(loginData);
         localStorage.setItem("sUserData",loginData)
-        navigate("/sUsers/outstanding");
+        navigate("/sUsers/dashboard");
         setEmail("");
         setPassword("");
       }, 1000);

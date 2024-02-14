@@ -10,7 +10,6 @@ import { FaEye } from "react-icons/fa6";
 import { SlUserFollow } from "react-icons/sl";
 import { IoIosCreate } from "react-icons/io";
 import { GiTakeMyMoney } from "react-icons/gi";
-import { IoReceipt } from "react-icons/io5";
 import { PiBankFill } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";

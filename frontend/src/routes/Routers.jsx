@@ -34,6 +34,7 @@ import ReceiptDetails from '../pages/primaryUsers/ReceiptDetails'
 import SecReceptionDetails from '../pages/secUsers/ReceiptDetails'
 import Dashboard from '../pages/primaryUsers/Dashboard'
 import EditOrg from '../pages/primaryUsers/EditOrg'
+import DashboardSec from '../pages/secUsers/Dashboard'
 
 
 const Routers = () => {
@@ -79,6 +80,7 @@ const Routers = () => {
         <Route path='/sUsers/payment' element={<ProtectedSecRoute><PaymentSec/></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/transaction' element={<ProtectedSecRoute><Transaction /></ProtectedSecRoute>}></Route>
         <Route path='/sUsers/receiptDetails/:id' element={<ProtectedSecRoute><SecReceptionDetails/></ProtectedSecRoute>}></Route>
+        <Route path='/sUsers/dashboard' element={<ProtectedSecRoute><DashboardSec/></ProtectedSecRoute>}></Route>
 
     </Routes>
   )
