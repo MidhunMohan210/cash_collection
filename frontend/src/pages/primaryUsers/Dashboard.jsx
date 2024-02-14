@@ -100,7 +100,7 @@ function Dashboard() {
                   <p>{org?.name?.slice(0, 1)}</p>
                 </div>
               </div>
-              <p className="font-bold text-md md:text-lg">{org.name}</p>
+              <p className="font-bold text-md md:text-lg">{org?.name}</p>
               <FaCaretDown/>
             </div>
           </div>
@@ -134,7 +134,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                    ₹0
                     </h4>
                     <div className="text-gray-500">Sale</div>
                   </div>
@@ -150,7 +150,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                    ₹0
                     </h4>
                     <div className="text-gray-500">Quotation</div>
                   </div>
@@ -166,7 +166,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                    ₹0
                     </h4>
                     <div className="text-gray-500">Stock</div>
                   </div>

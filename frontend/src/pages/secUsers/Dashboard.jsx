@@ -61,7 +61,7 @@ function Dashboard() {
  // Filter data based on today's date
  const filteredData = data.filter(item => {
 
-    const companyFilter=item.cmp_id===org._id
+    const companyFilter=item.cmp_id===org?._id
    const createdAtDate = new Date(item.createdAt);
    return createdAtDate.toDateString() === today.toDateString() && companyFilter  ;
 
@@ -101,7 +101,7 @@ function Dashboard() {
                   <p>{org?.name?.slice(0, 1)}</p>
                 </div>
               </div>
-              <p className="font-bold text-md md:text-lg">{org.name}</p>
+              <p className="font-bold text-md md:text-lg">{org?.name}</p>
               <FaCaretDown/>
             </div>
           </div>
@@ -135,7 +135,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                     ₹0
                     </h4>
                     <div className="text-gray-500">Sale</div>
                   </div>
@@ -151,7 +151,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                    ₹0
                     </h4>
                     <div className="text-gray-500">Quotation</div>
                   </div>
@@ -167,7 +167,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                      4644
+                    ₹0
                     </h4>
                     <div className="text-gray-500">Stock</div>
                   </div>
@@ -195,7 +195,7 @@ function Dashboard() {
           <div className="grid grid-cols-1 gap-4  text-center pb-7  ">
           
             {filteredData.map((el, index) => (
-            <Link key={index} to={`/pUsers/receiptDetails/${el._id}`} >
+            <Link key={index} to={`/sUsers/receiptDetails/${el._id}`} >
               <div
                 
                 className={` ${

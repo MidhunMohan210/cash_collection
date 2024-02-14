@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState={
-    settlementData:JSON.parse(localStorage.getItem('settlementData'))
+    settlementData:JSON.parse(localStorage.getItem('settlementData'))===null ?"":JSON.parse(localStorage.getItem('settlementData'))
 }
 
 const settlementDataSlice = createSlice({

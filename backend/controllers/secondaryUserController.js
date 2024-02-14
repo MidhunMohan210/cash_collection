@@ -143,7 +143,7 @@ export const fetchOutstandingDetails = async (req, res) => {
       party_id: partyId,
       cmp_id: cmp_id,
       bill_pending_amt: { $gt: 0 } 
-    });
+    }).sort({bill_date:1});
     if (outstandings) {
       return res.status(200).json({
         outstandings: outstandings,
