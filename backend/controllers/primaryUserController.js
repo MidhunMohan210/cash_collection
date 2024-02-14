@@ -549,7 +549,7 @@ export const transactions = async (req, res) => {
           isCancelled: 1,
           createdAt: 1,
           // totalBillAmount: 1,
-          // cmp_id: 1,
+          cmp_id: 1,
           // billNo: "$billData.billNo",
           // settledAmount: "$billData.settledAmount",
           // remainingAmount: "$billData.remainingAmount",

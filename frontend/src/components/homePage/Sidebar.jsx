@@ -276,7 +276,7 @@ function Sidebar({ TAB, showBar }) {
                     handleSidebarItemClick("outstanding");
                   }}
                   className={` ${
-                    TAB === "transaction"
+                    TAB === "dash"
                       ? "bg-gray-800 text-white"
                       : "text-gray-400"
                   } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}

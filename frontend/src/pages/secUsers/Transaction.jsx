@@ -2,23 +2,24 @@
 import SidebarSec from "../../components/secUsers/SidebarSec";
 import { useEffect, useState } from "react";
 import api from "../../api/api";
-import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
-import { ImCancelCircle } from "react-icons/im";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import {useSelector } from "react-redux";
+
 
 
 function Transaction() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [refresh, setRefresh] = useState(false);
   const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0]);
   const [showSidebar, setShowSidebar] = useState(false);
 
 
-  console.log(dateFilter);
+  const org=useSelector((state)=>state.secSelectedOrganization.secSelectedOrg);
+  console.log(org);
+
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -37,7 +38,9 @@ function Transaction() {
       }
     };
     fetchTransactions();
-  }, [refresh]);
+  }, []);
+
+  console.log(data);
 
   const filterOutstanding = (data) => {
     return data.filter((item) => {
@@ -48,7 +51,9 @@ function Transaction() {
         const dateFilterCondition =
         !dateFilter || item.createdAt?.startsWith(dateFilter);
 
-      return searchFilter && dateFilterCondition;
+        const companyFilter=item.cmp_id===org._id
+
+      return searchFilter && dateFilterCondition  && companyFilter;
     });
   };
 

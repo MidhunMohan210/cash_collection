@@ -1,4 +1,4 @@
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import loginb from "../../assets/images/loginb.jpg";
 import { toast } from "react-toastify";
 import { PropagateLoader } from "react-spinners";
@@ -23,7 +23,6 @@ function Login() {
       navigate("/pUsers/outstanding");
     }
   }, []);
-  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -61,12 +60,9 @@ function Login() {
         toast.success(res.data.message);
         const loginData = JSON.stringify(res.data.data);
         localStorage.setItem("pUserData", loginData);
-        if(res.data.data.haveOut==true){
-          navigate('/pUsers/outstanding')
-        }else{
 
-          navigate("/pUsers/addOrganization");
-        }
+        navigate("/pUsers/dashboard");
+
         setEmail("");
         setPassword("");
       }, 1000);
@@ -152,9 +148,7 @@ function Login() {
                 </div>
 
                 <div className="text-sm mt-3 cursor-pointer underline text-blue-500 ">
-                  <Link to={'/pUsers/forgotPassword'}>
-                 Forgot password
-                 </Link>
+                  <Link to={"/pUsers/forgotPassword"}>Forgot password</Link>
                 </div>
                 <div className="mt-5">
                   <button
@@ -172,8 +166,6 @@ function Login() {
                       "Login"
                     )}
                   </button>
-
-
                 </div>
                 <p className="text-center mt-3">
                   Already have an account?{" "}
@@ -185,17 +177,15 @@ function Login() {
                   </Link>
                 </p>
                 <div className="flex justify-center text-sm mt-1 ">
-              
-                <p className="text-center font-semibold ">
-                  Login as
-                  <Link to={"/sUsers/login"}>
-                    {" "}
-                    <span className="text-blue-500 ml-1 cursor-pointer">
-                      Retailer
-                    </span>
-                  </Link>
+                  <p className="text-center font-semibold ">
+                    Login as
+                    <Link to={"/sUsers/login"}>
+                      {" "}
+                      <span className="text-blue-500 ml-1 cursor-pointer">
+                        Retailer
+                      </span>
+                    </Link>
                   </p>
-                  
                 </div>
               </form>
             </div>

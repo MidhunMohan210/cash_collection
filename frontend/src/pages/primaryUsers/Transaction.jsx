@@ -4,10 +4,10 @@ import api from "../../api/api";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
-import { ImCancelCircle } from "react-icons/im";
 import Sidebar from "../../components/homePage/Sidebar";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import {useSelector } from "react-redux";
 
 
 function Transaction() {
@@ -18,7 +18,8 @@ function Transaction() {
   const [showSidebar, setShowSidebar] = useState(false);
 
 
-  console.log(dateFilter);
+const org=useSelector((state)=>state.setSelectedOrganization.selectedOrg);
+console.log(org);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -39,6 +40,8 @@ function Transaction() {
     fetchTransactions();
   }, [refresh]);
 
+  console.log(data);
+
   const filterOutstanding = (data) => {
     return data.filter((item) => {
       const searchFilter = item.party_name
@@ -48,28 +51,15 @@ function Transaction() {
         const dateFilterCondition =
         !dateFilter || item.createdAt?.startsWith(dateFilter);
 
-      return searchFilter && dateFilterCondition;
+        const companyFilter=item.cmp_id===org._id
+
+      return searchFilter && dateFilterCondition && companyFilter  ;
     });
   };
 
   const finalData = filterOutstanding(data);
 
-  const handleCancel = async (id) => {
-    try {
-      const res = await api.post(`/api/pUsers/cancelTransaction/${id}`, {}, {
-        withCredentials: true,
-      });
 
-      console.log(res.data);
-
-      toast.success(res.data.message);
-      setRefresh(!refresh);
-      // dispatch(addData(res.data.outstandingData));
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
-  };
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 768) {

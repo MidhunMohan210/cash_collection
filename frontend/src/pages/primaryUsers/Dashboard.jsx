@@ -23,7 +23,7 @@ function Dashboard() {
   const [data, setData] = useState([]);
 
   const org = useSelector(
-    (state) => state.setSelectedOrganization.selectedOrg.name
+    (state) => state.setSelectedOrganization.selectedOrg
   );
   console.log(org);
 
@@ -59,8 +59,13 @@ function Dashboard() {
 
  // Filter data based on today's date
  const filteredData = data.filter(item => {
+
+    const companyFilter=item.cmp_id===org._id
    const createdAtDate = new Date(item.createdAt);
-   return createdAtDate.toDateString() === today.toDateString();
+   return createdAtDate.toDateString() === today.toDateString() && companyFilter  ;
+
+
+
  });
 
  const receiptTotal=filteredData.reduce((acc,curr)=>{
@@ -73,7 +78,7 @@ function Dashboard() {
   return (
     <div className="flex bg-[#f9fdff]  ">
       <div>
-        <Sidebar showBar={showSidebar} />
+        <Sidebar TAB={"dash"} showBar={showSidebar} />
       </div>
 
       <div className="flex-1 h-screen overflow-y-scroll">
@@ -92,10 +97,10 @@ function Dashboard() {
             <div className=" bg-white shadow-lg p-2  flex items-center gap-3">
               <div className="bg-blue-500 rounded-full w-[30px] h-[30px]  flex justify-center items-center text-md  text-white font-bold">
                 <div className="rounded-full w-[25px] h-[25px] md:w-[25px] md:h-[25px] bg-[#012a4a] flex items-center justify-center">
-                  <p>{org.slice(0, 1)}</p>
+                  <p>{org?.name.slice(0, 1)}</p>
                 </div>
               </div>
-              <p className="font-bold text-md md:text-lg">{org}</p>
+              <p className="font-bold text-md md:text-lg">{org.name}</p>
               <FaCaretDown/>
             </div>
           </div>
