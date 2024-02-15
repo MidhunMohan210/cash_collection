@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unknown-property */
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../../components/homePage/Sidebar";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
@@ -14,17 +14,15 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { FaCaretDown } from "react-icons/fa";
-
-
-
+import { FcCancel } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [data, setData] = useState([]);
+  const navigate=useNavigate()
 
-  const org = useSelector(
-    (state) => state.setSelectedOrganization.selectedOrg
-  );
+  const org = useSelector((state) => state.setSelectedOrganization.selectedOrg);
   console.log(org);
 
   const handleToggleSidebar = () => {
@@ -52,29 +50,31 @@ function Dashboard() {
     fetchTransactions();
   }, []);
 
- console.log(data);
+  console.log(data);
 
+  const today = new Date();
 
- const today = new Date();
+  // Filter data based on today's date
+  const filteredData = data.filter((item) => {
+    const companyFilter = item.cmp_id === org._id;
+    const createdAtDate = new Date(item.createdAt);
+    return (
+      createdAtDate.toDateString() === today.toDateString() && companyFilter
+    );
+  });
+  console.log(filteredData);
 
- // Filter data based on today's date
- const filteredData = data.filter(item => {
+  const receiptTotal = filteredData.reduce((acc, curr) => {
+    if (!curr.isCancelled) {
+      return (acc = acc + curr.enteredAmount);
+    } else {
+      return acc;
+    }
+  }, 0);
 
-    const companyFilter=item.cmp_id===org._id
-   const createdAtDate = new Date(item.createdAt);
-   return createdAtDate.toDateString() === today.toDateString() && companyFilter  ;
+  console.log(receiptTotal);
 
-
-
- });
-
- const receiptTotal=filteredData.reduce((acc,curr)=>{
-  return acc=acc+curr.enteredAmount
- },0)
-
- console.log(receiptTotal);
-
- console.log(filteredData);
+  console.log(filteredData);
   return (
     <div className="flex bg-[#f9fdff]  ">
       <div>
@@ -101,28 +101,27 @@ function Dashboard() {
                 </div>
               </div>
               <p className="font-bold text-md md:text-lg">{org?.name}</p>
-              <FaCaretDown/>
+              <FaCaretDown />
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 p-6 lg:px-12 gap-4 md:gap-6 bg-white  ">
-            <Link to={'/pUsers/transaction'}>
-            <div className="flex flex-wrap -mx-6   duration-150 hover:scale-105 ease-in-out cursor-pointer ">
-              <div className="w-full px-6 ">
-                <div className="flex items-center px-2 py-3 md:px-5 md:py-2 shadow-sm rounded-md bg-slate-100">
-                  <div className="p-3 rounded-full bg-green-500 bg-opacity-75 text-2xl text-white">
-                    <IoReceiptSharp />
-                  </div>
+            <Link to={"/pUsers/transaction"}>
+              <div className="flex flex-wrap -mx-6   duration-150 hover:scale-105 ease-in-out cursor-pointer ">
+                <div className="w-full px-6 ">
+                  <div className="flex items-center px-2 py-3 md:px-5 md:py-2 shadow-sm rounded-md bg-slate-100">
+                    <div className="p-3 rounded-full bg-green-500 bg-opacity-75 text-2xl text-white">
+                      <IoReceiptSharp />
+                    </div>
 
-                  <div className="mx-5">
-                    <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                     ₹{receiptTotal}
-                    </h4>
-                    <div className="text-gray-500">Receipts</div>
+                    <div className="mx-5">
+                      <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
+                        ₹{receiptTotal}
+                      </h4>
+                      <div className="text-gray-500">Receipts</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
             </Link>
 
             <div className="flex flex-wrap -mx-6  duration-150 hover:scale-105 ease-in-out cursor-pointer">
@@ -134,7 +133,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                    ₹0
+                      ₹0
                     </h4>
                     <div className="text-gray-500">Sale</div>
                   </div>
@@ -150,7 +149,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                    ₹0
+                      ₹0
                     </h4>
                     <div className="text-gray-500">Quotation</div>
                   </div>
@@ -166,7 +165,7 @@ function Dashboard() {
 
                   <div className="mx-5">
                     <h4 className=" sm:text-md md:text-2xl  font-semibold text-gray-700">
-                    ₹0
+                      ₹0
                     </h4>
                     <div className="text-gray-500">Stock</div>
                   </div>
@@ -180,53 +179,54 @@ function Dashboard() {
           {/* transactions */}
           <hr />
           <hr />
-        
+
           <div className=" bg-white px-4 p-2 z-40 text-gray-500 text-lg font-bold flex items-center gap-3 z shadow-lg sm:sticky top-[115px]">
             <p> Today's Transactions</p>
-           
+
             <CiCalendarDate className="text-xl font-bold text-violet-500" />
-            <FaCaretDown/>
+            <FaCaretDown />
           </div>
         </div>
 
         <div className="z-0 p-3 md:p-5 lg:p-6">
           {/* one */}
           <div className="grid grid-cols-1 gap-4  text-center pb-7  ">
-          
             {filteredData.map((el, index) => (
-            <Link key={index} to={`/pUsers/receiptDetails/${el._id}`} >
-              <div
-                
-                className={` ${
-                  el?.isCancelled ? "bg-gray-200 pointer-events-none" : ""
-                } bg-[#f8ffff] rounded-md shadow-xl border border-gray-100  flex flex-col justify-between px-4  transition-all duration-150 transform hover:scale-105 ease-in-out`}
-              >
-                <div className="flex justify-between ">
-                  <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
-                    <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left mb-3 ">
-                      {el.party_name}
-                    </p>
-                    <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left text-violet-500 ">
-                      {el.billNo}
-                    </p>
+                <div
+                key={index}
+                onClick={()=>{navigate(`/pUsers/receiptDetails/${el._id}`)}}
+                  className={`${
+                    el?.isCancelled
+                      ? "bg-gray-200 pointer-events-none "
+                      : ""
+                  } bg-[#f8ffff] cursor-pointer rounded-md shadow-xl border border-gray-100 flex flex-col justify-between px-4 transition-all duration-150 transform hover:scale-105 ease-in-out`}
+                >
+                  <div className="flex justify-between ">
+                    <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
+                      <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left mb-3 ">
+                        {el.party_name}
+                      </p>
+                      <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left text-violet-500 ">
+                        {el.billNo}
+                      </p>
 
-                    <p className="text-gray-400 text-sm  ">
-                      {dayjs(el?.createdAt).format("DD/MM/YYYY")}
-                    </p>
-                  </div>
-                  <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-end relative flex-col">
-                    <div className="flex-col  ">
-                      <p className=" font-semibold text-green-600  ">
-                        ₹{el.enteredAmount}
+                      <p className="text-gray-400 text-sm  ">
+                        {dayjs(el?.createdAt).format("DD/MM/YYYY")}
                       </p>
                     </div>
+                    <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-end relative flex-col">
+                      <div className="flex-col  ">
+                        <p className=" font-semibold text-green-600  ">
+                          ₹{el.enteredAmount}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <hr />
-                <hr />
-                <hr />
-                <div className="flex justify-between p-4">
-                  {/* <button
+                  <hr />
+                  <hr />
+                  <hr />
+                  <div className="flex justify-between p-4">
+                    {/* <button
                     onClick={() => {
                       handleCancel(el._id);
                     }}
@@ -236,17 +236,24 @@ function Dashboard() {
                     {el.isCancelled ? "Cancelled" : "Cancel"}
                   </button> */}
 
-                  <div className=" flex items-center gap-2 text-md text-violet-500">
-                    <IoArrowRedoOutline />
-                    <p>Send Receipt</p>
+                    <div className=" flex items-center justify-between w-full gap-2 text-md text-violet-500">
+                      <div className="flex items-center gap-2">
+                        <IoArrowRedoOutline />
+
+                        <p>Send Receipt</p>
+                      </div>
+                      {el.isCancelled && (
+                        <div className="flex justify-center items-center gap-2 text-red-500">
+                          <FcCancel />
+                          <p>Canelled</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-          </Link>
             ))}
           </div>
           {/* one */}
-
         </div>
 
         {/* transactions */}
