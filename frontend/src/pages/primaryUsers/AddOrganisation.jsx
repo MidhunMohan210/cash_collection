@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import uploadImageToCloudinary from "../../../utils/uploadCloudinary.js";
 import { HashLoader } from "react-spinners";
 import Sidebar from "../../components/homePage/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { IoReorderThreeSharp } from "react-icons/io5";
 
 const AddOrganisation = () => {
