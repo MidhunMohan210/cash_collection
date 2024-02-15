@@ -5,8 +5,6 @@ export default axios.create({
     // baseURL:'https://erp.camet.in/'
 
     // baseURL:'https://camet.midhunmohan.online/'
+
+    //hello
 });
-
-
-
-console.log("haiiii");
