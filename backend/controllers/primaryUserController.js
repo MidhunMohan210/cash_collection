@@ -11,6 +11,7 @@ import nodemailer from "nodemailer";
 import primaryUserModel from "../models/primaryUserModel.js";
 import generateNumericOTP from "../utils/generateOtp.js";
 import OragnizationModel from "../models/OragnizationModel.js";
+import PartyModel from "../models/partyModel.js";
 
 // @desc Register Primary user
 // route POST/api/pUsers/register
@@ -833,3 +834,63 @@ export const getTransactionDetails = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+
+
+
+// @desc adding new Party
+// route POst/api/pUsers/addParty
+export const addParty = async (req, res) => {
+  try {
+    const { cpm_id,
+      Primary_user_id,
+      accountGroup,
+      partyName,
+      mobileNumber,
+      emailID,
+      gstNo,
+      panNo,
+      billingAddress,
+      shippingAddress,
+      creditPeriod,
+      creditLimit,
+      openingBalanceType,
+      openingBalanceAmount } = req.body;
+
+    const party = new PartyModel({
+      cpm_id,
+      Primary_user_id,
+      accountGroup,
+      partyName,
+      mobileNumber,
+      emailID,
+      gstNo,
+      panNo,
+      billingAddress,
+      shippingAddress,
+      creditPeriod,
+      creditLimit,
+      openingBalanceType,
+      openingBalanceAmount
+    });
+
+    const result = await party.save();
+
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        message: "Party added successfully",
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Party adding failed",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error, try again!" });
+  }
+};

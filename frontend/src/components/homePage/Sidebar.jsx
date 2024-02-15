@@ -16,6 +16,8 @@ import { removeSelectedOrganization } from "../../../slices/PrimarySelectedOrgSl
 import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
+import { TiUserAdd } from "react-icons/ti";
+
 
 
 
@@ -510,6 +512,23 @@ function Sidebar({ TAB, showBar }) {
                   <GiTakeMyMoney />
 
                   <span className="mx-4 font-medium">Outstandings</span>
+                </a>
+              </Link>
+              <Link to={"/pUsers/addParty"}>
+                <a
+                  onClick={() => {
+                    handleSidebarItemClick("addParty");
+                  }}
+                  className={` ${
+                    TAB === "addParty"
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400"
+                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                  href="#"
+                >
+                  <TiUserAdd />
+
+                  <span className="mx-4 font-medium">Add Party</span>
                 </a>
               </Link>
             
