@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [data, setData] = useState([]);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const org = useSelector((state) => state.setSelectedOrganization.selectedOrg);
   console.log(org);
@@ -192,41 +192,41 @@ function Dashboard() {
           {/* one */}
           <div className="grid grid-cols-1 gap-4  text-center pb-7  ">
             {filteredData.map((el, index) => (
-                <div
+              <div
                 key={index}
-                onClick={()=>{navigate(`/pUsers/receiptDetails/${el._id}`)}}
-                  className={`${
-                    el?.isCancelled
-                      ? "bg-gray-200 pointer-events-none "
-                      : ""
-                  } bg-[#f8ffff] cursor-pointer rounded-md shadow-xl border border-gray-100 flex flex-col justify-between px-4 transition-all duration-150 transform hover:scale-105 ease-in-out`}
-                >
-                  <div className="flex justify-between ">
-                    <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
-                      <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left mb-3 ">
-                        {el.party_name}
-                      </p>
-                      <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left text-violet-500 ">
-                        {el.billNo}
-                      </p>
+                onClick={() => {
+                  navigate(`/pUsers/receiptDetails/${el._id}`);
+                }}
+                className={`${
+                  el?.isCancelled ? "bg-gray-200 pointer-events-none " : ""
+                } bg-[#f8ffff] cursor-pointer rounded-md shadow-xl border border-gray-100 flex flex-col justify-between px-4 transition-all duration-150 transform hover:scale-105 ease-in-out`}
+              >
+                <div className="flex justify-between ">
+                  <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
+                    <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left mb-3 ">
+                      {el.party_name}
+                    </p>
+                    <p className="font-bold md:font-semibold text-[11.3px] md:text-[15px] text-left text-violet-500 ">
+                      {el.billNo}
+                    </p>
 
-                      <p className="text-gray-400 text-sm  ">
-                        {dayjs(el?.createdAt).format("DD/MM/YYYY")}
+                    <p className="text-gray-400 text-sm  ">
+                      {dayjs(el?.createdAt).format("DD/MM/YYYY")}
+                    </p>
+                  </div>
+                  <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-end relative flex-col">
+                    <div className="flex-col  ">
+                      <p className=" font-semibold text-green-600  ">
+                        ₹{el.enteredAmount}
                       </p>
-                    </div>
-                    <div className=" h-full p-2 lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-end relative flex-col">
-                      <div className="flex-col  ">
-                        <p className=" font-semibold text-green-600  ">
-                          ₹{el.enteredAmount}
-                        </p>
-                      </div>
                     </div>
                   </div>
-                  <hr />
-                  <hr />
-                  <hr />
-                  <div className="flex justify-between p-4">
-                    {/* <button
+                </div>
+                <hr />
+                <hr />
+                <hr />
+                <div className="flex justify-between p-4">
+                  {/* <button
                     onClick={() => {
                       handleCancel(el._id);
                     }}
@@ -236,21 +236,21 @@ function Dashboard() {
                     {el.isCancelled ? "Cancelled" : "Cancel"}
                   </button> */}
 
-                    <div className=" flex items-center justify-between w-full gap-2 text-md text-violet-500">
-                      <div className="flex items-center gap-2">
-                        <IoArrowRedoOutline />
+                  <div className=" flex items-center justify-between w-full gap-2 text-md text-violet-500">
+                    <div className="flex items-center gap-2">
+                      <IoArrowRedoOutline />
 
-                        <p>Send Receipt</p>
-                      </div>
-                      {el.isCancelled && (
-                        <div className="flex justify-center items-center gap-2 text-red-500">
-                          <FcCancel />
-                          <p>Canelled</p>
-                        </div>
-                      )}
+                      <p>Send Receipt</p>
                     </div>
+                    {el.isCancelled && (
+                      <div className="flex justify-center items-center gap-2 text-red-500">
+                        <FcCancel />
+                        <p>Canelled</p>
+                      </div>
+                    )}
                   </div>
                 </div>
+              </div>
             ))}
           </div>
           {/* one */}

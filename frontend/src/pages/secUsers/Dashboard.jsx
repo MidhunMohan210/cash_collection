@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unknown-property */
 import { useState,useEffect } from "react";
-import Sidebar from "../../components/homePage/Sidebar";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { IoReceiptSharp } from "react-icons/io5";
@@ -15,6 +14,8 @@ import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { FaCaretDown } from "react-icons/fa";
 import SidebarSec from "../../components/secUsers/SidebarSec";
+import { useNavigate } from "react-router-dom";
+
 
 
 
@@ -22,6 +23,8 @@ import SidebarSec from "../../components/secUsers/SidebarSec";
 function Dashboard() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [data, setData] = useState([]);
+
+  const navigate = useNavigate();
 
   const org = useSelector(
     (state) => state.secSelectedOrganization.secSelectedOrg
@@ -69,9 +72,14 @@ function Dashboard() {
 
  });
 
- const receiptTotal=filteredData.reduce((acc,curr)=>{
-  return acc=acc+curr.enteredAmount
- },0)
+ const receiptTotal = filteredData.reduce((acc, curr) => {
+  if (!curr.isCancelled) {
+    return (acc = acc + curr.enteredAmount);
+  } else {
+    return acc;
+  }
+}, 0);
+
 
  console.log(receiptTotal);
 
@@ -195,12 +203,15 @@ function Dashboard() {
           <div className="grid grid-cols-1 gap-4  text-center pb-7  ">
           
             {filteredData.map((el, index) => (
-            <Link key={index} to={`/sUsers/receiptDetails/${el._id}`} >
-              <div
-                
-                className={` ${
-                  el?.isCancelled ? "bg-gray-200 pointer-events-none" : ""
-                } bg-[#f8ffff] rounded-md shadow-xl border border-gray-100  flex flex-col justify-between px-4  transition-all duration-150 transform hover:scale-105 ease-in-out`}
+            // <Link key={index} to={`/sUsers/receiptDetails/${el._id}`} >
+                <div
+                key={index}
+                onClick={() => {
+                  navigate(`/pUsers/receiptDetails/${el._id}`);
+                }}
+                className={`${
+                  el?.isCancelled ? "bg-gray-200 pointer-events-none " : ""
+                } bg-[#f8ffff] cursor-pointer rounded-md shadow-xl border border-gray-100 flex flex-col justify-between px-4 transition-all duration-150 transform hover:scale-105 ease-in-out`}
               >
                 <div className="flex justify-between ">
                   <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
@@ -243,7 +254,7 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-          </Link>
+          // </Link>
             ))}
           </div>
           {/* one */}
