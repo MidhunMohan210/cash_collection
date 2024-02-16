@@ -6,20 +6,24 @@ import dayjs from "dayjs";
 import { IoArrowRedoOutline } from "react-icons/io5";
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import {useSelector } from "react-redux";
-
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { FcCancel } from "react-icons/fc";
 
 function Transaction() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0]);
+  const [dateFilter, setDateFilter] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [showSidebar, setShowSidebar] = useState(false);
 
+  const org = useSelector(
+    (state) => state.secSelectedOrganization.secSelectedOrg
+  );
+  const navigate = useNavigate();
 
-  const org=useSelector((state)=>state.secSelectedOrganization.secSelectedOrg);
   console.log(org);
-
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -48,12 +52,12 @@ function Transaction() {
         ?.toLowerCase()
         .includes(search.toLowerCase());
 
-        const dateFilterCondition =
+      const dateFilterCondition =
         !dateFilter || item.createdAt?.startsWith(dateFilter);
 
-        const companyFilter=item.cmp_id===org._id
+      const companyFilter = item.cmp_id === org._id;
 
-      return searchFilter && dateFilterCondition  && companyFilter;
+      return searchFilter && dateFilterCondition && companyFilter;
     });
   };
 
@@ -94,10 +98,10 @@ function Transaction() {
           <div className="sticky top-0 flex flex-col z-30 bg-white">
             <div className="bg-white"></div>
             <div className="bg-[#012a4a] shadow-lg px-4 py-3 pb-3 flex items-center gap-2  ">
-            <IoReorderThreeSharp
-              onClick={handleToggleSidebar}
-              className="block md:hidden text-white text-3xl"
-            />
+              <IoReorderThreeSharp
+                onClick={handleToggleSidebar}
+                className="block md:hidden text-white text-3xl"
+              />
               <p className="text-white text-lg   font-bold ">Transactions</p>
             </div>
             <div className=" mt-0 shadow-lg p-2 md:p-0">
@@ -158,12 +162,15 @@ function Transaction() {
 
           <div className="grid grid-cols-1 gap-4 mt-6 text-center pb-7  ">
             {finalData.map((el, index) => (
-              <Link  key={index} to={`/sUsers/receiptDetails/${el._id}`}>
+              // <Link  to={`/sUsers/receiptDetails/${el._id}`}>
               <div
-               
-                className={` ${
-                  el?.isCancelled ? "bg-gray-200 pointer-events-none" : ""
-                } bg-[#f8ffff] rounded-md shadow-xl border border-gray-100  flex flex-col justify-between px-4  transition-all duration-150 transform hover:scale-105 ease-in-out`}
+                key={index}
+                onClick={() => {
+                  navigate(`/sUsers/receiptDetails/${el._id}`);
+                }}
+                className={`${
+                  el?.isCancelled ? "bg-gray-200 pointer-events-none " : ""
+                } bg-[#f8ffff] cursor-pointer rounded-md shadow-xl border border-gray-100 flex flex-col justify-between px-4 transition-all duration-150 transform hover:scale-105 ease-in-out`}
               >
                 <div className="flex justify-between ">
                   <div className=" h-full px-2 py-4  lg:p-6 w-[150px] md:w-[180px] lg:w-[300px] flex justify-center items-start relative flex-col ">
@@ -200,13 +207,21 @@ function Transaction() {
                     {el.isCancelled ? "Cancelled" : "Cancel"}
                   </button> */}
 
-                  <div className=" flex items-center gap-2 text-md text-violet-500">
-                    <IoArrowRedoOutline />
-                    <p>Send Receipt</p>
+                  <div className=" flex items-center justify-between w-full gap-2 text-md text-violet-500">
+                    <div className="flex items-center gap-2">
+                      <IoArrowRedoOutline />
+
+                      <p>Send Receipt</p>
+                    </div>
+                    {el.isCancelled && (
+                      <div className="flex justify-center items-center gap-2 text-red-500">
+                        <FcCancel />
+                        <p>Canelled</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-              </Link>
             ))}
           </div>
         </div>
