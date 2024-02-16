@@ -3,9 +3,9 @@ const upload_preset = import.meta.env.VITE_UPLOAD_PRESET;
 const cloud_name = import.meta.env.VITE_CLOUD_NAME;
 const api_key = import.meta.env.API_KEY;
 
-console.log("API Key:", api_key);
-console.log("Cloud Name:", cloud_name);
-console.log("Upload Preset:", upload_preset);
+// console.log("API Key:", api_key);
+// console.log("Cloud Name:", cloud_name);
+// console.log("Upload Preset:", upload_preset);
 
 
 

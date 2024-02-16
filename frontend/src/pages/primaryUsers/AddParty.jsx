@@ -41,20 +41,18 @@ function AddParty() {
         accountGroup,
         partyName,
         emailID,
-        gstNo,
-        panNo,
-        billingAddress,
-        openingBalanceType,
-        shippingAddress,
+        // gstNo,
+        // panNo,
+        // billingAddress,
+        // openingBalanceType,
+        // shippingAddress,
       ].some((field) => field.trim() === "")
     ) {
       toast.error("All fields are required");
       return;
     }
     if (
-      [mobileNumber, creditPeriod, creditLimit, openingBalanceAmount].some(
-        (field) => field === ""
-      )
+      mobileNumber===""
     ) {
       toast.error("All fields are required");
       return;
@@ -72,12 +70,12 @@ function AddParty() {
 
     const gstRegex = /^[0-9A-Za-z]{15}$/;
 
-    if (!gstRegex.test(gstNo)) {
+    if (gstNo && !gstRegex.test(gstNo)) {
       toast.error("Invalid GST number");
       return;
     }
 
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNo)) {
+    if (panNo && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNo)) {
       toast.error("Invalid PAN number");
       return;
     }

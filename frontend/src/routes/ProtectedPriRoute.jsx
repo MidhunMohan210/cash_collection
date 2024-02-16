@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 function ProtectedPriRoute({ children }) {
   const priUserData = JSON.parse(localStorage.getItem("pUserData"));
 
-  console.log(priUserData);
 
   if (priUserData == null ||priUserData == undefined || priUserData == "" ) {
     // Use Navigate component within a returned JSX expression

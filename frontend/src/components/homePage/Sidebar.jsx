@@ -17,12 +17,12 @@ import { setSelectedOrganization } from "../../../slices/PrimarySelectedOrgSlice
 import { IoReorderThreeSharp } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { TiUserAdd } from "react-icons/ti";
+import { HiDocumentText } from "react-icons/hi2";
 
 
 
 
 function Sidebar({ TAB, showBar }) {
-  console.log(showBar);
   const [showSidebar, setShowSidebar] = useState(false);
   const [userData, setUserData] = useState({});
   const [dropdown, setDropdown] = useState(false);
@@ -44,9 +44,8 @@ function Sidebar({ TAB, showBar }) {
     bankList: false,
   });
 
-  console.log(selectedOrg);
+
   const user = localStorage.getItem("pUserData");
-  console.log(user);
 
   useEffect(() => {
     if (TAB == "addOrg") {
@@ -82,7 +81,6 @@ function Sidebar({ TAB, showBar }) {
       setOrganizations(res.data.organizationData);
 
       if (selectedOrgFromRedux) {
-        console.log("haii");
         setSelectedOrg(selectedOrgFromRedux);
       } else {
         // If no organization is selected, set the first organization as selectedOrg
@@ -155,7 +153,6 @@ function Sidebar({ TAB, showBar }) {
     }
   };
 
-  console.log(selectedOrg);
 
   return (
     <div className="relative">
@@ -529,6 +526,23 @@ function Sidebar({ TAB, showBar }) {
                   <TiUserAdd />
 
                   <span className="mx-4 font-medium">Add Party</span>
+                </a>
+              </Link>
+              <Link to={"/pUsers/hsn"}>
+                <a
+                  onClick={() => {
+                    handleSidebarItemClick("addParty");
+                  }}
+                  className={` ${
+                    TAB === "hsn"
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400"
+                  } hover:bg-gray-800 hover:text-white flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-lg   `}
+                  href="#"
+                >
+                  <HiDocumentText />
+
+                  <span className="mx-4 font-medium">Tax classification</span>
                 </a>
               </Link>
             
