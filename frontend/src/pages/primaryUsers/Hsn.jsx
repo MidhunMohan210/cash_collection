@@ -6,6 +6,9 @@ import { useSelector } from "react-redux";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { MdDeleteSweep } from "react-icons/md";
 import { RiArrowRightSFill } from "react-icons/ri";
+import { toast } from "react-toastify";
+import api from "../../api/api";
+import { set } from "mongoose";
 
 // import "./hsn.css";
 
@@ -17,14 +20,24 @@ function Hsn() {
   const [igstRate, setIgstRate] = useState("");
   const [cgstRate, setCgstRate] = useState("");
   const [sgstUtgstRate, setSgstUtgstRate] = useState("");
-  const [openingBalanceAmount, setOpeningBalanceAmount] = useState("");
+  const [onValue, setOnValue] = useState("");
+  const [onQuantity, setOnQuantity] = useState("");
   const [cpm_id, setCmp_id] = useState("");
   const [Primary_user_id, setPrimary_user_id] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
   const [isRevisedChargeApplicable, setIsRevisedChargeApplicable] =
     useState(false);
 
-    console.log(taxabilityType);
+  console.log(taxabilityType);
+  console.log(hsn);
+  console.log(description);
+  console.log(igstRate);
+  console.log(cgstRate);
+  console.log(sgstUtgstRate);
+  console.log(onValue);
+  console.log(onQuantity);
+
+  //   table    ///////////////////////////
 
   const [rows, setRows] = useState([
     {
@@ -38,12 +51,37 @@ function Hsn() {
       basedOnQuantity: "",
     },
   ]);
-
-
-//   table    ///////////////////////////
-
+  console.log(rows);
 
   const handleAddRow = () => {
+    let hasEmptyField = false;
+
+    rows.forEach((row, index) => {
+    
+      if (row.taxabilityType === "") {
+        // toast.error("Select taxability type");
+        hasEmptyField = true; // Set the flag to true to indicate an error
+        return; // Exit the loop if the condition is met
+      }
+      if (row.taxabilityType === "Taxable") {
+        const nonEmptyFields = Object.keys(row).filter((key) => {
+          return key !== "basedOnValue" && key !== "basedOnQuantity";
+        });
+
+        const isEmpty = nonEmptyFields.some((key) => row[key] === "");
+
+        if (isEmpty) {
+          hasEmptyField = true;
+          return; // Exit the loop if the condition is met
+        }
+      }
+    });
+
+    if (hasEmptyField) {
+      toast.error("All required fields must be filled");
+      return; // Exit the function if there's an error
+    }
+
     setRows([
       ...rows,
       {
@@ -88,8 +126,14 @@ function Hsn() {
     }
   };
 
-//   table    ///////////////////////////
+  //   table    ///////////////////////////
 
+  useEffect(() => {
+    if (igstRate !== "") {
+      setCgstRate(parseFloat(igstRate / 2).toString());
+      setSgstUtgstRate(parseFloat(igstRate / 2).toString());
+    }
+  }, [igstRate]);
 
   const [checkedValue, setCheckedValue] = useState("onValue");
   const handleChangeCheck = (value) => {
@@ -100,106 +144,163 @@ function Hsn() {
     setIsRevisedChargeApplicable(e.target.checked);
   };
 
-  const companytId = useSelector(
+  const companyId = useSelector(
     (state) => state.setSelectedOrganization.selectedOrg._id
   );
   const user = JSON.parse(localStorage.getItem("pUserData"));
   const userId = user._id;
   useEffect(() => {
-    setCmp_id(companytId);
+    setCmp_id(companyId);
     setPrimary_user_id(userId);
   }, []);
 
-  //   const submitHandler = async () => {
-  //     if (
-  //       [
-  //         accountGroup,
-  //         partyName,
-  //         emailID,
-  //         // gstNo,
-  //         // panNo,
-  //         // billingAddress,
-  //         // openingBalanceType,
-  //         // shippingAddress,
-  //       ].some((field) => field.trim() === "")
-  //     ) {
-  //       toast.error("All fields are required");
-  //       return;
-  //     }
-  //     if (mobileNumber === "") {
-  //       toast.error("All fields are required");
-  //       return;
-  //     }
+  const submitHandler = async () => {
+    if (tab == "onValue") {
+      if (
+        [hsn, description, taxabilityType].some((field) => field.trim() === "")
+      ) {
+        toast.error("All gene fields are required");
+        return;
+      }
 
-  //     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(emailID)) {
-  //       toast.error("Invalid email address");
-  //       return;
-  //     }
+      if (taxabilityType === "taxable") {
+        if (igstRate === "" || cgstRate === "" || sgstUtgstRate === "") {
+          toast.error("All tax fields are required");
+          return;
+        }
+      }
+    } else {
+      if ([hsn, description].some((field) => field.trim() === "")) {
+        toast.error("All fields are required");
+        return;
+      }
+      if (rows.length === 1) {
+        if (rows[0].upto === "") {
+          toast.error("Upto fied must be filled");
+          return;
+        }
+        if (rows[0].taxabilityType === "") {
+          toast.error("Taxability Type must be filled");
+          return;
+        }
+        if (rows[0].taxabilityType === "Taxable") {
+          if (rows[0].igstRate === "") {
+            toast.error("IgstRate Type must be filled");
+            return;
+          }
 
-  //     if (!/^\d{10}$/.test(mobileNumber)) {
-  //       toast.error("Mobile number must be 10 digits");
-  //       return;
-  //     }
+          if (rows[0].cgstRate === "") {
+            toast.error("CgstRate Type must be filled");
+            return;
+          }
 
-  //     const gstRegex = /^[0-9A-Za-z]{15}$/;
+          if (rows[0].sgstUtgstRate === "") {
+            toast.error("sgstUtgstRate Type must be filled");
+            return;
+          }
+        }
+      } else {
+       
 
-  //     if (gstNo && !gstRegex.test(gstNo)) {
-  //       toast.error("Invalid GST number");
-  //       return;
-  //     }
+        const lastRow = rows[rows.length - 1];
 
-  //     if (panNo && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNo)) {
-  //       toast.error("Invalid PAN number");
-  //       return;
-  //     }
+        if (lastRow.taxabilityType === "") {
+          toast.error("Taxability Type must be filled");
+          return;
+        }
 
-  //     const formData = {
-  //       cpm_id,
-  //       Primary_user_id,
-  //       accountGroup,
-  //       partyName,
-  //       mobileNumber,
-  //       emailID,
-  //       gstNo,
-  //       panNo,
-  //       billingAddress,
-  //       shippingAddress,
-  //       creditPeriod,
-  //       creditLimit,
-  //       openingBalanceType,
-  //       openingBalanceAmount,
-  //     };
+        // console.log(lastRow.taxabilityType);
 
-  //     console.log(formData);
+        if (lastRow.taxabilityType === "Taxable") {
+          if (lastRow.igstRate === "") {
+            toast.error("IgstRate Type must be filled");
+            return;
+          }
 
-  //     try {
-  //       const res = await api.post("/api/pUsers/addParty", formData, {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         withCredentials: true,
-  //       });
+          if (lastRow.cgstRate === "") {
+            toast.error("CgstRate Type must be filled");
+            return;
+          }
 
-  //       toast.success(res.data.message);
-  //       setCmp_id("");
-  //       setPrimary_user_id("");
-  //       setAccountGroup("");
-  //       setPartyName("");
-  //       setMobileNumber("");
-  //       setEmailID("");
-  //       setGstNo("");
-  //       setPanNo("");
-  //       setBillingAddress("");
-  //       setShippingAddress("");
-  //       setCreditPeriod("");
-  //       setCreditLimit("");
-  //       setOpeningBalanceType("");
-  //       setOpeningBalanceAmount("");
-  //     } catch (error) {
-  //       toast.error(error.response.data.message);
-  //       console.log(error);
-  //     }
-  //   };
+          if (lastRow.sgstUtgstRate === "") {
+            toast.error("sgstUtgstRate Type must be filled");
+            return;
+          }
+        }
+      }
+    }
+
+    let formData;
+
+    if (tab == "onValue") {
+      formData = {
+        cpm_id,
+        Primary_user_id,
+        hsn,
+        description,
+        tab,
+        taxabilityType,
+        igstRate,
+        cgstRate,
+        sgstUtgstRate,
+        onValue,
+        onQuantity,
+        isRevisedChargeApplicable,
+      };
+    } else {
+      formData = {
+        cpm_id,
+        Primary_user_id,
+        hsn,
+        description,
+        tab,
+        rows,
+        isRevisedChargeApplicable,
+      };
+    }
+
+    console.log(formData);
+
+    //     console.log(formData);
+
+    try {
+      const res = await api.post("/api/pUsers/addHsn", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      toast.success(res.data.message);
+      
+      // Resetting individual state variables
+  
+      setHsn("");
+      setDescription("");
+      // setTab("");
+      setTaxabilityType("");
+      setIgstRate("");
+      setCgstRate("");
+      setSgstUtgstRate("");
+      setOnQuantity("");
+      setOnValue("");
+      setIsRevisedChargeApplicable("");
+    
+      // Resetting the rows state
+      setRows(rows.map((row) => ({
+        greaterThan: "",
+        upto: "",
+        taxabilityType: "",
+        igstRate: "",
+        cgstRate: "",
+        sgstUtgstRate: "",
+        basedOnValue: "",
+        basedOnQuantity: "",
+      })));
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
+    }
+  };
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 768) {
@@ -212,7 +313,7 @@ function Hsn() {
       <div>
         <Sidebar TAB={"hsn"} showBar={showSidebar} />
       </div>
-      <div className="flex-1 flex flex-col h-screen overflow-y-scroll" >
+      <div className="flex-1 flex flex-col h-screen overflow-y-scroll">
         <div className="bg-[#012A4A] sticky top-0 p-3 z-100 text-white text-lg font-bold flex items-center gap-3 z-20">
           <IoReorderThreeSharp
             onClick={handleToggleSidebar}
@@ -355,7 +456,7 @@ function Hsn() {
                               IGST Rate
                             </label>
                             <input
-                            disabled={taxabilityType!=="taxable"}
+                              disabled={taxabilityType !== "taxable"}
                               type="number"
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                               value={igstRate}
@@ -373,17 +474,10 @@ function Hsn() {
                               CGST Rate
                             </label>
                             <input
-                            disabled={taxabilityType!=="taxable"}
-
+                              disabled={taxabilityType !== "taxable"}
                               type="number"
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                              value={
-                                cgstRate !== ""
-                                  ? cgstRate
-                                  : igstRate !== ""
-                                  ? parseFloat(igstRate / 2)
-                                  : ""
-                              }
+                              value={cgstRate}
                               onChange={(e) => setCgstRate(e.target.value)}
                               placeholder="CGST Rate"
                             />
@@ -398,17 +492,14 @@ function Hsn() {
                               SGST/UTGST Rate
                             </label>
                             <input
-                            disabled={taxabilityType!=="taxable"}
-
+                              disabled={taxabilityType !== "taxable"}
                               type="text"
-                              className={`${taxabilityType!=="taxable"? "pointer-events-none" : ""}border-0  px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
-                              value={
-                                sgstUtgstRate !== ""
-                                  ? sgstUtgstRate
-                                  : igstRate !== ""
-                                  ? parseFloat(igstRate / 2)
+                              className={`${
+                                taxabilityType !== "taxable"
+                                  ? "pointer-events-none"
                                   : ""
-                              }
+                              }border-0  px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150`}
+                              value={sgstUtgstRate}
                               onChange={(e) => setSgstUtgstRate(e.target.value)}
                               placeholder="SGST/UTGST Rate"
                             />
@@ -429,12 +520,9 @@ function Hsn() {
                               Based On Value
                             </label>
                             <input
-                            disabled={taxabilityType!=="taxable"}
-
-                              value={openingBalanceAmount}
-                              onChange={(e) =>
-                                setOpeningBalanceAmount(e.target.value)
-                              }
+                              disabled={taxabilityType !== "taxable"}
+                              value={onValue}
+                              onChange={(e) => setOnValue(e.target.value)}
                               type="number"
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                               placeholder="0%"
@@ -450,12 +538,9 @@ function Hsn() {
                               Based on Quantity
                             </label>
                             <input
-                            disabled={taxabilityType!=="taxable"}
-
-                              value={openingBalanceAmount}
-                              onChange={(e) =>
-                                setOpeningBalanceAmount(e.target.value)
-                              }
+                              disabled={taxabilityType !== "taxable"}
+                              value={onQuantity}
+                              onChange={(e) => setOnQuantity(e.target.value)}
                               type="number"
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                               placeholder="0/Unit"
@@ -488,7 +573,7 @@ function Hsn() {
                     <>
                       <hr className="mt-6 mb-1 border-b-1 border-blueGray-300" />
                       <div className=" w-full flex justify-end">
-                        <RiArrowRightSFill/>
+                        <RiArrowRightSFill />
                       </div>
 
                       <div
@@ -695,6 +780,7 @@ function Hsn() {
 
                       <div className="ml-1">
                         <button
+                          type="button"
                           onClick={handleAddRow}
                           disabled={
                             rows.length === 0 ||
@@ -748,7 +834,7 @@ function Hsn() {
                   <button
                     className="bg-pink-500 mt-4  w-20 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 transform hover:scale-105"
                     type="button"
-                    // onClick={submitHandler}
+                    onClick={submitHandler}
                   >
                     Add
                   </button>

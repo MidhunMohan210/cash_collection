@@ -12,6 +12,7 @@ import primaryUserModel from "../models/primaryUserModel.js";
 import generateNumericOTP from "../utils/generateOtp.js";
 import OragnizationModel from "../models/OragnizationModel.js";
 import PartyModel from "../models/partyModel.js";
+import HsnModel from "../models/hsnModel.js";
 
 // @desc Register Primary user
 // route POST/api/pUsers/register
@@ -885,6 +886,66 @@ export const addParty = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Party adding failed",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error, try again!" });
+  }
+};
+
+
+
+
+// @desc adding new Hsn
+// route POst/api/pUsers/addHsn
+export const addHsn = async (req, res) => {
+  try {
+    const { cpm_id,
+      Primary_user_id,
+      hsn,
+      description,
+      tab,
+      taxabilityType,
+      igstRate,
+      cgstRate,
+      sgstUtgstRate,
+      onValue,
+      onQuantity,
+      isRevisedChargeApplicable,
+      rows
+
+     } = req.body;
+
+    const hsnCreation = new HsnModel({
+      cpm_id,
+      Primary_user_id,
+      hsn,
+      description,
+      tab,
+      taxabilityType,
+      igstRate,
+      cgstRate,
+      sgstUtgstRate,
+      onValue,
+      onQuantity,
+      isRevisedChargeApplicable,
+      rows
+    });
+
+    const result = await hsnCreation.save();
+
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        message: "Hsn added successfully",
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Hsn adding failed",
       });
     }
   } catch (error) {
