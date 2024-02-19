@@ -56,7 +56,7 @@ function Hsn() {
   const handleAddRow = () => {
     let hasEmptyField = false;
 
-    rows.forEach((row, index) => {
+    rows.forEach((row, ) => {
     
       if (row.taxabilityType === "") {
         // toast.error("Select taxability type");
